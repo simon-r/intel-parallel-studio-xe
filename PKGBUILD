@@ -101,6 +101,7 @@ source=('icc.sh'
 	'intel-ipp.conf'
 	'intel-tbb.conf'
 	'intel-mkl.sh'
+        'intel-mkl.install'
 	'EULA.txt'
 	)
 
@@ -114,6 +115,7 @@ sha256sums=(
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'
 	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
 	'6fce1efcd39ae7db633f7d9e76713c6f964bbac3bda1ab4724df4a1d1cbfb4ad'
+	'059d3a018b05161594e3d4b9822c627b88d47a15ea09c14692cb89d9f94d2a7f'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
 	)
 
@@ -427,7 +429,7 @@ package_intel-mkl() {
 	pkgdesc="Intel Math Kernel Library (Intel® MKL) "
 	pkgver=${_year}.${_v_a}.${_v_b}
 	depends=('intel-compiler-base')
-	install=intel-composer.install
+	install=intel-mkl.install
 	backup=('etc/profile.d/intel-mkl.sh')
 
 	mkdir -p ${srcdir}/opt
