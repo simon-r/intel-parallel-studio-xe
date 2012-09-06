@@ -49,14 +49,14 @@ _remove_static_objects=false
 
 
 _year='2013'
-_v_a='11'
-_v_b='339' 
+_v_a='0'
+_v_b='079' 
 
-_update='update3'
+_update=''
 
 pkgrel=1
 
-_sp='sp1'
+_sp=''
 
 pkgver=${_year}.${_v_a}.${_v_b}
 
@@ -65,13 +65,13 @@ _dir_nr='2749'
 options=(strip)
 
 
-_icc_ver='12.1'
-_ipp_ver='7.0-7'
-_mkl_ver='10.3-11'
-_openmp_ver='12.1-11'
-_sourcechecker_ver='12.1-11'
+_icc_ver='13.0'
+_ipp_ver='7.1-0'
+_mkl_ver='11.0-0'
+_openmp_ver='13.0-0'
+_sourcechecker_ver='13.0-0'
 
-_tbb_ver='4.0-5'
+_tbb_ver='4.1-0'
 _tbb_arch='cc4.1.0_libc2.4_kernel2.6.16.21'
 _tbb_not_arch='cc3.4.3_libc2.3.4_kernel2.6.9'
 
@@ -130,7 +130,7 @@ else
     sha256sums=('6d3f5a635e86bc6d71d970458d746df8f4f239e8892347d76b4eda18946048f3' ${sha256sums[@]} )
 fi
 
-_composer_xe_dir="composer_xe_${_year}_${_sp}.${_v_a}.${_v_b}"
+_composer_xe_dir="composer_xe_${_year}.${_v_a}.${_v_b}"
 _parallel_studio_xe_dir="parallel_studio_xe_${_year}_${_i_arch}"
 
 # http://registrationcenter-download.intel.com/akdlm/irc_nas/2405/parallel_studio_xe_2011_sp1_update1_intel64.tgz
@@ -161,7 +161,7 @@ build() {
 	echo "-----------------------------------------------------------------------------"
 	echo "" 
 	echo "-----------------------------------------------------------------------------"
-	echo " Github: https://github.com/simon-r/intel_composer_pkgbuild" 
+	echo " Github: https://github.com/simon-r/intel-parallel-studio-xe" 
 	echo "-----------------------------------------------------------------------------"
 
 	mkdir -p ${srcdir}/etc/profile.d
@@ -314,10 +314,10 @@ package_intel-fortran-compiler() {
 
 	rm *.csh
 
-	rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/diagspt.cat
-	rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/flexnet.cat
-	rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/helpf.cat
-	rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/helpxi.cat
+	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/diagspt.cat
+	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/flexnet.cat
+	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/helpf.cat
+	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/helpxi.cat
 
 	if $_remove_docs ; then
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
@@ -387,9 +387,9 @@ package_intel-ipp() {
 
 	cd ${srcdir}
 	
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-${_sp}-common-${_v_b}-${_ipp_ver}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-${_sp}-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-${_sp}-devel-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-common-${_v_b}-${_ipp_ver}.noarch.rpm
+	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-devel-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
 
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/bin
 	rm ippvars.csh
@@ -431,9 +431,9 @@ package_intel-mkl() {
 
 	cd ${srcdir}
 	
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-${_sp}-common-${_v_b}-${_mkl_ver}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-${_sp}-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-${_sp}-devel-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-common-${_v_b}-${_mkl_ver}.noarch.rpm
+	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-devel-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
 
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/bin
 	rm mklvars.csh
@@ -513,8 +513,8 @@ package_intel-tbb() {
 
 	cd ${srcdir}
 	
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-tbb-${_sp}-${_v_b}-${_tbb_ver}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-tbb-${_sp}-devel-${_v_b}-${_tbb_ver}.noarch.rpm
+	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-tbb-${_v_b}-${_tbb_ver}.noarch.rpm
+	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-tbb-devel-${_v_b}-${_tbb_ver}.noarch.rpm
 
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin
 	rm tbbvars.csh
