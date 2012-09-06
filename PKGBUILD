@@ -220,6 +220,12 @@ build() {
 	echo "    - The build of the packages: intel-mkl and intel-ipp is particularly slow - "
 	echo "-----------------------------------------------------------------------------------"
 	echo ""
+	echo ""
+	echo "-----------------------------------------------------------------------------------"
+	echo -e " \e[1m\e[5mATTENTION: \e[0m \e[1m\e[31mThis PKGBUILD don't work with yaourt! \e[0m "
+	echo " You must use the makepkg command for building this package"
+	echo "-----------------------------------------------------------------------------------"
+	echo ""
 
 	cd ${srcdir}/opt/intel
 	ln -s ./${_composer_xe_dir} composerxe-${_year}
@@ -551,5 +557,5 @@ package_intel-tbb() {
 	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
 }
 
-pkgdesc=("Intel C C++ and fortran compilers - Intel Parallel Studio XE  - icc icpc ifort ipp mkl " )
+pkgdesc="Intel C++ C and fortran compiler - Intel Parallel Studio XE  - intel compiler - icc icpc ifort ipp mkl "
 depends=('bash' 'gcc')
