@@ -111,7 +111,7 @@ sha256sums=(
 	'a856326362e9b80c19dc237cbf66bf3d96a69bd7ad1baff99ec9849f8208348c' 
 	'976de24a127e1f43b1b2696ac3aef9fe03cb26b9bcf81126c73ffc751b2604d5'
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'
-	'e09f80df778228c6dcd5bb58076fb44d171e18cf0a4b87e6db6bf264b1da92cf'
+	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
 	)
 
@@ -318,6 +318,7 @@ package_intel-fortran-compiler() {
 	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/flexnet.cat
 	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/helpf.cat
 	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/helpxi.cat
+	rm ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/en_US/gs_resources/intel_logo.gif
 
 	if $_remove_docs ; then
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
@@ -504,11 +505,11 @@ package_intel-tbb() {
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/${_i_arch}/' < ../intel-tbb.conf > ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
-	  sed -i 's/<tbb_arch>/cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21/' ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
+	  sed 's/<arch>/ia32/' < ../intel-tbb.conf > ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
+	  sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
 	else
-	  sed 's/<arch>/${_i_arch_tbb}/' < ../intel-tbb.conf > ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
-	  sed -i 's/<tbb_arch>/cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21/' ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
+	  sed 's/<arch>/intel64/' < ../intel-tbb.conf > ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
+	  sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
 	fi
 
 	cd ${srcdir}
@@ -521,9 +522,9 @@ package_intel-tbb() {
 
 	sed -i 's/SUBSTITUTE_INSTALL_DIR_HERE/\/opt\/intel\/composerxe\/tbb/g' tbbvars.sh
 
-	sed -i 's/SUBSTITUTE_IA32_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
-	sed -i 's/SUBSTITUTE_IA64_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
-	sed -i 's/SUBSTITUTE_INTEL64_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
+	#sed -i 's/SUBSTITUTE_IA32_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
+	#sed -i 's/SUBSTITUTE_IA64_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
+	#sed -i 's/SUBSTITUTE_INTEL64_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
 	chmod a+x tbbvars.sh
 
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin
@@ -532,12 +533,12 @@ package_intel-tbb() {
 	chmod a+x tbbvars.sh
 
 	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch}
-	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch_64}
-	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_i_arch}/${_tbb_not_arch}
+	#rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch_64}
+	#rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_i_arch}/${_tbb_not_arch}
 
 	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_not_arch}
-	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_not_arch_64}
-	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_i_arch}/${_tbb_not_arch}
+	#rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_not_arch_64}
+	#rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_i_arch}/${_tbb_not_arch}
 
 	if $_remove_docs ; then
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
