@@ -54,7 +54,7 @@ _v_b='079'
 
 _update=''
 
-pkgrel=1
+pkgrel=2
 
 _sp=''
 
@@ -100,6 +100,7 @@ source=('icc.sh'
 	'intel-idb.conf'
 	'intel-ipp.conf'
 	'intel-tbb.conf'
+	'intel-mkl.sh'
 	'EULA.txt'
 	)
 
@@ -112,6 +113,7 @@ sha256sums=(
 	'976de24a127e1f43b1b2696ac3aef9fe03cb26b9bcf81126c73ffc751b2604d5'
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'
 	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
+	'6fce1efcd39ae7db633f7d9e76713c6f964bbac3bda1ab4724df4a1d1cbfb4ad'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
 	)
 
@@ -426,9 +428,14 @@ package_intel-mkl() {
 	pkgver=${_year}.${_v_a}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-composer.install
+	backup=('etc/profile.d/intel-mkl.sh')
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	
+	mkdir -p ${srcdir}/etc/profile.d
+	cp ../intel-mkl.sh ${srcdir}/etc/profile.d
+	
 
 	if [ "$CARCH" = "i686" ]; then
 	  sed 's/<arch>/ia32/' < ../intel-mkl.conf > ${srcdir}/etc/ld.so.conf.d/intel-mkl.conf
