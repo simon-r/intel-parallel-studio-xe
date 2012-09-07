@@ -72,9 +72,6 @@ _openmp_ver='13.0-0'
 _sourcechecker_ver='13.0-0'
 
 _tbb_ver='4.1-0'
-_tbb_arch='cc4.1.0_libc2.4_kernel2.6.16.21'
-_tbb_not_arch='cc3.4.3_libc2.3.4_kernel2.6.9'
-
 
 
 
