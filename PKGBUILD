@@ -102,6 +102,7 @@ source=('icc.sh'
 	'intel-tbb.conf'
 	'intel-mkl.sh'
         'intel-mkl.install'
+        'intel-mkl-th.conf'
 	'EULA.txt'
 	)
 
@@ -115,7 +116,8 @@ sha256sums=(
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'
 	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
 	'6fce1efcd39ae7db633f7d9e76713c6f964bbac3bda1ab4724df4a1d1cbfb4ad'
-	'059d3a018b05161594e3d4b9822c627b88d47a15ea09c14692cb89d9f94d2a7f'
+	'0768dda7e6fcd6cd269afc3194158a7b6bb2b63371095c0fd5855d6f6ec06c7d'
+        'bbb4c07a864f254cc34c3a810ef9b7cf81e033d35324fd746884d73cfeb627bd'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
 	)
 
@@ -203,9 +205,7 @@ build() {
 	cp ../*.lic ${srcdir}/opt/intel/licenses
 
 	cp ${srcdir}/${_parallel_studio_xe_dir}/license.txt ${srcdir}/opt/intel/license.txt
-	#cp ${srcdir}/${_parallel_studio_xe_dir}/license_jp ${srcdir}/opt/intel/license_jp.txt
-	#cp ${srcdir}/${_parallel_studio_xe_dir}/support.txt ${srcdir}/opt/intel/
-
+	
 	echo ""
 	echo "-----------------------------------------------------------------------------------"
 	echo "IMPORTANT - READ BEFORE COPYING, INSTALLING, OR USING."
@@ -324,10 +324,6 @@ package_intel-fortran-compiler() {
 
 	rm *.csh
 
-	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/diagspt.cat
-	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/flexnet.cat
-	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/helpf.cat
-	#rm ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/locale/ja_JP/helpxi.cat
 	rm ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/en_US/gs_resources/intel_logo.gif
 
 	if $_remove_docs ; then
@@ -430,14 +426,17 @@ package_intel-mkl() {
 	pkgver=${_year}.${_v_a}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-mkl.install
-	backup=('etc/profile.d/intel-mkl.sh')
+	backup=('etc/intel-mkl-th.conf')
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
 	
 	mkdir -p ${srcdir}/etc/profile.d
+
 	cp ../intel-mkl.sh ${srcdir}/etc/profile.d
-	
+	chmod a+x ${srcdir}/etc/profile.d/ntel-mkl.sh
+
+	cp ../intel-mkl-th.conf ${srcdir}/etc/
 
 	if [ "$CARCH" = "i686" ]; then
 	  sed 's/<arch>/ia32/' < ../intel-mkl.conf > ${srcdir}/etc/ld.so.conf.d/intel-mkl.conf
@@ -537,9 +536,6 @@ package_intel-tbb() {
 
 	sed -i 's/SUBSTITUTE_INSTALL_DIR_HERE/\/opt\/intel\/composerxe\/tbb/g' tbbvars.sh
 
-	#sed -i 's/SUBSTITUTE_IA32_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
-	#sed -i 's/SUBSTITUTE_IA64_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
-	#sed -i 's/SUBSTITUTE_INTEL64_ARCH_HERE/\"cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21\"/g' tbbvars.sh
 	chmod a+x tbbvars.sh
 
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin
@@ -548,13 +544,9 @@ package_intel-tbb() {
 	chmod a+x tbbvars.sh
 
 	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch}
-	#rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch_64}
-	#rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_i_arch}/${_tbb_not_arch}
-
+	
 	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_not_arch}
-	#rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_not_arch_64}
-	#rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_i_arch}/${_tbb_not_arch}
-
+	
 	if $_remove_docs ; then
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/examples
