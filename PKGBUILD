@@ -114,7 +114,7 @@ sha256sums=(
 	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
 	'6c92a868d7df6f8139bb03f158aa8ea14e6ac62e1b2f56f2686f8615c7388546'
 	'0768dda7e6fcd6cd269afc3194158a7b6bb2b63371095c0fd5855d6f6ec06c7d'
-        'bbb4c07a864f254cc34c3a810ef9b7cf81e033d35324fd746884d73cfeb627bd'
+        'e515cb28bf40cdb0db818db6a2688a0028575153a1b9d5acfb0bc5f13fe45722'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
 	)
 
@@ -450,6 +450,12 @@ package_intel-ipp() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
+	if $_remove_static_objects ; then
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/libipp*.a
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/nonpic/libipp*.a
+	  rmdir ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/nonpic/
+	fi
+
 	mv ${srcdir}/opt ${pkgdir}
 
 	mkdir -p ${pkgdir}/etc
@@ -501,6 +507,11 @@ package_intel-mkl() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/benchmarks
 	fi
 
+	if $_remove_static_objects ; then
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/libmkl_*.a
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/mic/libmkl_*.a
+	fi
+
 	mv ${srcdir}/opt ${pkgdir}
 
 	mkdir -p ${pkgdir}/etc
@@ -524,6 +535,11 @@ package_intel-openmp() {
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-openmp-devel-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
 
 	mv ${srcdir}/opt ${pkgdir}
+
+	if $_remove_static_objects ; then
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/mic/lib*.a
+	fi	
 
 	mkdir -p ${pkgdir}/etc
 	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
