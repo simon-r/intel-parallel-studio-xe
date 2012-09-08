@@ -32,7 +32,7 @@
 
 pkgname=('intel-parallel-studio-xe')
 true && pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-idb' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb' )
-#true && pkgname=('intel-compiler-base' 'intel-fortran-compiler' 'intel-openmp' 'intel-tbb')
+#true && pkgname=('intel-compiler-base'  'intel-mkl')
 
 PKGEXT='.pkg.tar.gz'
 
@@ -42,9 +42,9 @@ PKGEXT='.pkg.tar.gz'
 _amd_64=false 
 
 # set to true if you want to remove documentations and examples form the packages.
-_remove_docs=false
+_remove_docs=true
 
-_remove_static_objects=false
+_remove_static_objects=true
 ########################################
 
 
@@ -144,7 +144,7 @@ source=("http://registrationcenter-download.intel.com/akdlm/irc_nas/${_dir_nr}/$
 build() {
 
 	echo "-----------------------------------------------------------------------------"
-	echo " This PKGBUILD splits the main Parallel Studio XE package in 8 sub-packages:"
+	echo -e " This PKGBUILD splits the main \e[1mParallel Studio XE\e[0m package in 8 sub-packages:"
 	echo ""
 	echo " intel-compiler-base:          Intel C/C++ compiler and base libs"
 	echo " intel-fortran-compiler:       Intel fortran compiler and base libs"
@@ -162,12 +162,16 @@ build() {
 	echo "-----------------------------------------------------------------------------"
 	echo "" 
 	echo "-----------------------------------------------------------------------------"
-	echo " WIKI: https://wiki.archlinux.org/index.php/Intel_C%2B%2B"
+	echo -e "\e[1mWIKI: \e[0m https://wiki.archlinux.org/index.php/Intel_C%2B%2B"
 	echo "-----------------------------------------------------------------------------"
 	echo "" 
 	echo "-----------------------------------------------------------------------------"
-	echo " Github: https://github.com/simon-r/intel-parallel-studio-xe" 
+	echo -e "\e[1mGithub: \e[0m https://github.com/simon-r/intel-parallel-studio-xe" 
 	echo "-----------------------------------------------------------------------------"
+
+	if [ -d ${srcdir}/opt/intel ] ; then
+	  rm -rf ${srcdir}/opt/intel
+	fi
 
 	mkdir -p ${srcdir}/etc/profile.d
 
@@ -192,7 +196,7 @@ build() {
 	if [[ ! -f "${_lic_file[0]}" ]]; then
 	  echo ""
 	  echo "-----------------------------------------------------------------------------------"
-	  echo "ERROR: license file not foud!"
+	  echo -e "\e[1mERROR:\e[0m license file not foud!"
 	  echo "To continue this procedure you must obtain an original license file from Intel"
 	  echo "that must be copied in the PKGBUILD directory"
 	  echo "visit:  http://software.intel.com/en-us/articles/non-commercial-software-download/"
@@ -207,7 +211,7 @@ build() {
 	
 	echo ""
 	echo "-----------------------------------------------------------------------------------"
-	echo "IMPORTANT - READ BEFORE COPYING, INSTALLING, OR USING."
+	echo -e "\e[1mIMPORTANT - READ BEFORE COPYING, INSTALLING, OR USING.\e[0m"
 	echo ""
 	echo "Do not copy, install, or use the \"Materials\" provided under this license agreement (\"Agreement\"), until you"
 	echo "have carefully read the following terms and conditions."
@@ -229,6 +233,24 @@ build() {
 	echo " You must use the makepkg command for building this package"
 	echo "-----------------------------------------------------------------------------------"
 	echo ""
+	echo ""
+	echo "-----------------------------------------------------------------------------------"
+	echo -e "\e[1mOptions:\e[0m"
+	if  ${_remove_docs} ; then
+	  echo " Remove Documentation: YES "
+	else
+	  echo " Remove Documentation: NO "
+	fi
+
+	if  ${_remove_static_objects} ; then
+	  echo -e "\e[1m Remove Static Objects: YES \e[0m "
+	else
+	  echo -e " Remove Static Objects: NO "
+	fi
+	echo "-----------------------------------------------------------------------------------"
+	echo ""
+	echo ""
+
 
 	cd ${srcdir}/opt/intel
 	ln -s ./${_composer_xe_dir} composerxe-${_year}
@@ -294,11 +316,11 @@ package_intel-compiler-base() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Samples
 	fi
 
-        mv ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/man/en_US/*.1 ${srcdir}/usr/share/man/man1/
+        mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
 
 	cd ${_man_dir}
 	for f in *.1 ; do
-	  gzip f
+	  gzip $f
 	done
 
 	cd ${srcdir}
@@ -344,11 +366,11 @@ package_intel-fortran-compiler() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Samples
 	fi
 
-        mv ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/man/en_US/*.1 ${srcdir}/usr/share/man/man1/
+        mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
 
 	cd ${_man_dir}
 	for f in *.1 ; do
-	  gzip f
+	  gzip $f
 	done
 
 	cd ${srcdir}
@@ -395,11 +417,11 @@ package_intel-idb() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
-	mv ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/man/en_US/*.1 ${srcdir}/usr/share/man/man1/
+	mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
 
 	cd ${_man_dir}
 	for f in *.1 ; do
-	  gzip f
+	  gzip $f
 	done
 
 	cd ${srcdir}
@@ -446,14 +468,14 @@ package_intel-ipp() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/interfaces/data-compression/${_z_dir_name}/bin/${_not_arch}
 	done
 
-	if $_remove_docs ; then
+	if ${_remove_docs} ; then
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
-	if $_remove_static_objects ; then
+	if ${_remove_static_objects} ; then
 	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/libipp*.a
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/nonpic/libipp*.a
-	  rmdir ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/nonpic/
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/libipp*.a
+	  rmdir ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/
 	fi
 
 	mv ${srcdir}/opt ${pkgdir}
@@ -475,7 +497,7 @@ package_intel-mkl() {
 	mkdir -p ${srcdir}/etc/profile.d
 
 	cp ../intel-mkl.sh ${srcdir}/etc/profile.d
-	chmod a+x ${srcdir}/etc/profile.d/ntel-mkl.sh
+	chmod a+x ${srcdir}/etc/profile.d/intel-mkl.sh
 
 	cp ../intel-mkl-th.conf ${srcdir}/etc/
 
@@ -501,13 +523,13 @@ package_intel-mkl() {
 	rm mklvars_${_i_arch}.csh
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' mklvars_${_i_arch}.sh
 
-	if $_remove_docs ; then
+	if ${_remove_docs} ; then
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/examples
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/benchmarks
 	fi
 
-	if $_remove_static_objects ; then
+	if ${_remove_static_objects} ; then
 	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/libmkl_*.a
 	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/mic/libmkl_*.a
 	fi
@@ -516,6 +538,7 @@ package_intel-mkl() {
 
 	mkdir -p ${pkgdir}/etc
 	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
+	mv ${srcdir}/etc/intel-mkl-th.conf ${pkgdir}/etc
 }
 
 package_intel-openmp() {
@@ -534,12 +557,16 @@ package_intel-openmp() {
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-openmp-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-openmp-devel-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
 
-	mv ${srcdir}/opt ${pkgdir}
+	
+	if ${_remove_static_objects} ; then
+          echo "remove static"
+	  ls -al ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
 
-	if $_remove_static_objects ; then
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/mic/lib*.a
+	  rm -f -v ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
+	  rm -f -v ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/mic/lib*.a
 	fi	
+
+	mv ${srcdir}/opt ${pkgdir}
 
 	mkdir -p ${pkgdir}/etc
 	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
