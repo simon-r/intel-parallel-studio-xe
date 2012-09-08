@@ -87,7 +87,7 @@ fi
 url="http://software.intel.com/en-us/articles/non-commercial-software-download/"
 arch=('i686' 'x86_64')
 license=('custom')
-makedepends=('libarchive' 'sed')
+makedepends=('libarchive' 'sed' 'gzip')
 
 source=('icc.sh' 
 	'intel-compiler-base.conf' 
@@ -112,7 +112,7 @@ sha256sums=(
 	'976de24a127e1f43b1b2696ac3aef9fe03cb26b9bcf81126c73ffc751b2604d5'
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'
 	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
-	'6fce1efcd39ae7db633f7d9e76713c6f964bbac3bda1ab4724df4a1d1cbfb4ad'
+	'6c92a868d7df6f8139bb03f158aa8ea14e6ac62e1b2f56f2686f8615c7388546'
 	'0768dda7e6fcd6cd269afc3194158a7b6bb2b63371095c0fd5855d6f6ec06c7d'
         'bbb4c07a864f254cc34c3a810ef9b7cf81e033d35324fd746884d73cfeb627bd'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
@@ -136,7 +136,9 @@ fi
 _composer_xe_dir="composer_xe_${_year}.${_v_a}.${_v_b}"
 _parallel_studio_xe_dir="parallel_studio_xe_${_year}_${_i_arch}"
 
-# http://registrationcenter-download.intel.com/akdlm/irc_nas/2405/parallel_studio_xe_2011_sp1_update1_intel64.tgz
+_man_dir=${srcdir}/usr/share/man/man1/
+
+
 source=("http://registrationcenter-download.intel.com/akdlm/irc_nas/${_dir_nr}/${_parallel_studio_xe_dir}.tgz" ${source[@]})
 
 build() {
@@ -257,6 +259,8 @@ package_intel-compiler-base() {
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/profile.d
+	mkdir -p ${_man_dir}
+
 
 	cp ../intel-compiler-base.conf ${srcdir}/etc/ld.so.conf.d
 
@@ -290,8 +294,19 @@ package_intel-compiler-base() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Samples
 	fi
 
+        mv ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/man/en_US/*.1 ${srcdir}/usr/share/man/man1/
+
+	cd ${_man_dir}
+	for f in *.1 ; do
+	  gzip f
+	done
+
+	cd ${srcdir}
+
+
 	mv ${srcdir}/opt ${pkgdir}
 	mv ${srcdir}/etc ${pkgdir}
+	mv ${srcdir}/usr ${pkgdir}
 }
 
 
@@ -304,6 +319,7 @@ package_intel-fortran-compiler() {
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/profile.d
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${_man_dir}
 
 	if [ "$CARCH" = "i686" ]; then
 	  sed 's/<arch>/ia32/' < ../intel-fortran.conf > ${srcdir}/etc/ld.so.conf.d/intel-fortran.conf
@@ -328,8 +344,19 @@ package_intel-fortran-compiler() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Samples
 	fi
 
+        mv ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/man/en_US/*.1 ${srcdir}/usr/share/man/man1/
+
+	cd ${_man_dir}
+	for f in *.1 ; do
+	  gzip f
+	done
+
+	cd ${srcdir}
+	
+	
 	mv ${srcdir}/opt ${pkgdir}
 	mv ${srcdir}/etc ${pkgdir}
+	mv ${srcdir}/usr ${pkgdir}
 }
 
 package_intel-idb() {
@@ -340,6 +367,7 @@ package_intel-idb() {
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${_man_dir}
 
 	if [ "$CARCH" = "i686" ]; then
 	  sed 's/<arch>/ia32/' < ../intel-idb.conf > ${srcdir}/etc/ld.so.conf.d/intel-idb.conf
@@ -367,10 +395,20 @@ package_intel-idb() {
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
+	mv ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/man/en_US/*.1 ${srcdir}/usr/share/man/man1/
+
+	cd ${_man_dir}
+	for f in *.1 ; do
+	  gzip f
+	done
+
+	cd ${srcdir}
+
 	mv ${srcdir}/opt ${pkgdir}
 	
 	mkdir -p ${pkgdir}/etc
 	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
+	mv ${srcdir}/usr ${pkgdir}
 }
 
 package_intel-ipp() {
