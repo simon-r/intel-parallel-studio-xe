@@ -90,6 +90,7 @@ license=('custom')
 makedepends=('libarchive' 'sed' 'gzip')
 
 source=('icc.sh' 
+	'intel-composer.install'
 	'intel-compiler-base.conf' 
 	'intel-fortran.conf'
 	'intel-openmp.conf'
@@ -100,11 +101,13 @@ source=('icc.sh'
 	'intel-mkl.sh'
         'intel-mkl.install'
         'intel-mkl-th.conf'
+	'intel-tbb.install'
 	'EULA.txt'
 	)
 
 sha256sums=( 
 	'338041f924d8f3ac31d349bca57f8ab66f094a5bb53d4f821f48fa710a112111' 
+	'b7e1a3849c62f293245221d7ab5ee35c0e737b90b3eb4ae83c1eb41023d4e3ec'
 	'31ac4d0f30a93fe6393f48cb13761d7d1ce9719708c76a377193d96416bed884' 
 	'c165386ba33b25453d4f5486b7fefcdba7d31e156ad280cbdfa13ed924b01bef'
 	'99cc9683cc75934cc21bb5a09f6ad83365ee48712719bfd914de9444695eed13' 
@@ -113,8 +116,9 @@ sha256sums=(
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'
 	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
 	'5e68c529c65cac54218026c869e54b2ddb268179725fc1e6b56d920470dad999'
-	'0768dda7e6fcd6cd269afc3194158a7b6bb2b63371095c0fd5855d6f6ec06c7d'
+	'bfd7daab7518a63f322fa011a84ea210e0bbc14f0bfacfaa16d477513c35c950'
         'e515cb28bf40cdb0db818db6a2688a0028575153a1b9d5acfb0bc5f13fe45722'
+	'8c6a1f7b1b12d498e68b3085d8b2fcd050505209b7c0f2b870ba5f65ee135a90'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
 	)
 
@@ -501,6 +505,7 @@ package_intel-ipp() {
 	  rmdir ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/
 	fi
 
+	echo -e " # intel-ipp: Move package"
 	mv ${srcdir}/opt ${pkgdir}
 
 	mkdir -p ${pkgdir}/etc
