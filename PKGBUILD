@@ -112,7 +112,7 @@ sha256sums=(
 	'976de24a127e1f43b1b2696ac3aef9fe03cb26b9bcf81126c73ffc751b2604d5'
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'
 	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
-	'6c92a868d7df6f8139bb03f158aa8ea14e6ac62e1b2f56f2686f8615c7388546'
+	'5e68c529c65cac54218026c869e54b2ddb268179725fc1e6b56d920470dad999'
 	'0768dda7e6fcd6cd269afc3194158a7b6bb2b63371095c0fd5855d6f6ec06c7d'
         'e515cb28bf40cdb0db818db6a2688a0028575153a1b9d5acfb0bc5f13fe45722'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
@@ -143,31 +143,31 @@ source=("http://registrationcenter-download.intel.com/akdlm/irc_nas/${_dir_nr}/$
 
 build() {
 
-	echo "-----------------------------------------------------------------------------"
+	echo -e "-----------------------------------------------------------------------------"
 	echo -e " This PKGBUILD splits the main \e[1mParallel Studio XE\e[0m package in 8 sub-packages:"
-	echo ""
-	echo " intel-compiler-base:          Intel C/C++ compiler and base libs"
-	echo " intel-fortran-compiler:       Intel fortran compiler and base libs"
-	echo " intel-openmp:                 Intel OpenMP Library"
-	echo " intel-idb:                    Intel C/C++ debugger"
-	echo " intel-ipp:                    Intel Integrated Performance Primitives"
-	echo " intel-mkl:                    Intel Math Kernel Library (Intel® MKL)"
-	echo " intel-sourcechecker:          Intel Source Checker"
-	echo " intel-tbb:                    Intel Threading Building Blocks (TBB)"
-	echo "-----------------------------------------------------------------------------"
-	echo "" 
-	echo "-----------------------------------------------------------------------------"
-	echo "For having a minimal working environment you must install the packages:"
-	echo " intel-compiler-base       intel-openmp "
-	echo "-----------------------------------------------------------------------------"
-	echo "" 
-	echo "-----------------------------------------------------------------------------"
+	echo -e ""
+	echo -e " \e[1mintel-compiler-base:\e[0m          Intel C/C++ compiler and base libs"
+	echo -e " \e[1mintel-fortran-compiler:\e[0m       Intel fortran compiler and base libs"
+	echo -e " \e[1mintel-openmp:\e[0m                 Intel OpenMP Library"
+	echo -e " \e[1mintel-idb:\e[0m                    Intel C/C++ debugger"
+	echo -e " \e[1mintel-ipp:\e[0m                    Intel Integrated Performance Primitives"
+	echo -e " \e[1mintel-mkl:\e[0m                    Intel Math Kernel Library (Intel® MKL)"
+	echo -e " \e[1mintel-sourcechecker:\e[0m          Intel Source Checker"
+	echo -e " \e[1mintel-tbb:\e[0m                    Intel Threading Building Blocks (TBB)"
+	echo -e "-----------------------------------------------------------------------------"
+	echo -e "" 
+	echo -e "-----------------------------------------------------------------------------"
+	echo -e "For having a minimal working environment you must install the packages:"
+	echo -e " intel-compiler-base       intel-openmp "
+	echo -e "-----------------------------------------------------------------------------"
+	echo -e "" 
+	echo -e "-----------------------------------------------------------------------------"
 	echo -e "\e[1mWIKI: \e[0m https://wiki.archlinux.org/index.php/Intel_C%2B%2B"
-	echo "-----------------------------------------------------------------------------"
-	echo "" 
-	echo "-----------------------------------------------------------------------------"
+	echo -e "-----------------------------------------------------------------------------"
+	echo -e "" 
+	echo -e "-----------------------------------------------------------------------------"
 	echo -e "\e[1mGithub: \e[0m https://github.com/simon-r/intel-parallel-studio-xe" 
-	echo "-----------------------------------------------------------------------------"
+	echo -e "-----------------------------------------------------------------------------"
 
 	if [ -d ${srcdir}/opt/intel ] ; then
 	  rm -rf ${srcdir}/opt/intel
@@ -194,13 +194,13 @@ build() {
 	done
 
 	if [[ ! -f "${_lic_file[0]}" ]]; then
-	  echo ""
-	  echo "-----------------------------------------------------------------------------------"
+	  echo -e ""
+	  echo -e "-----------------------------------------------------------------------------------"
 	  echo -e "\e[1mERROR:\e[0m license file not foud!"
-	  echo "To continue this procedure you must obtain an original license file from Intel"
-	  echo "that must be copied in the PKGBUILD directory"
-	  echo "visit:  http://software.intel.com/en-us/articles/non-commercial-software-download/"
-	  echo "-----------------------------------------------------------------------------------"
+	  echo -e "To continue this procedure you must obtain an original license file from Intel"
+	  echo -e "that must be copied in the PKGBUILD directory"
+	  echo -e "visit:  http://software.intel.com/en-us/articles/non-commercial-software-download/"
+	  echo -e "-----------------------------------------------------------------------------------"
 	  return 1 ;
 	fi
 
@@ -209,37 +209,37 @@ build() {
 
 	cp ${srcdir}/${_parallel_studio_xe_dir}/license.txt ${srcdir}/opt/intel/license.txt
 	
-	echo ""
-	echo "-----------------------------------------------------------------------------------"
+	echo -e ""
+	echo -e "-----------------------------------------------------------------------------------"
 	echo -e "\e[1mIMPORTANT - READ BEFORE COPYING, INSTALLING, OR USING.\e[0m"
-	echo ""
-	echo "Do not copy, install, or use the \"Materials\" provided under this license agreement (\"Agreement\"), until you"
-	echo "have carefully read the following terms and conditions."
-	echo ""
-	echo "By copying, installing, or otherwise using the Materials, you agree to be bound by the terms of this" 
-	echo "Agreement. If you do not agree to the terms of this Agreement, do not copy, install, or use the Materials."
-	echo " - A copy of the EULA has been copied in the PKGBUILD directory; plase read carefully the terms and "
-	echo " - conditions of the Intel license before installing the packages. "
-	echo "-----------------------------------------------------------------------------------"
-	echo ""
-	echo "-----------------------------------------------------------------------------------"
-	echo " ATTENTION: This PKGBUILD may need up to 20 minutes if you use XZ as a compressor!"
-	echo "    - The build of the packages: intel-mkl and intel-ipp is particularly slow - "
-	echo "-----------------------------------------------------------------------------------"
-	echo ""
-	echo ""
-	echo "-----------------------------------------------------------------------------------"
+	echo -e ""
+	echo -e "Do not copy, install, or use the \"Materials\" provided under this license agreement (\"Agreement\"), until you"
+	echo -e "have carefully read the following terms and conditions."
+	echo -e ""
+	echo -e "By copying, installing, or otherwise using the Materials, you agree to be bound by the terms of this" 
+	echo -e "Agreement. If you do not agree to the terms of this Agreement, do not copy, install, or use the Materials."
+	echo -e " - A copy of the EULA has been copied in the PKGBUILD directory; plase read carefully the terms and "
+	echo -e " - conditions of the Intel license before installing the packages. "
+	echo -e "-----------------------------------------------------------------------------------"
+	echo -e ""
+	echo -e "-----------------------------------------------------------------------------------"
+	echo -e " ATTENTION: This PKGBUILD may need up to 20 minutes if you use XZ as a compressor!"
+	echo -e "    - The build of the packages: intel-mkl and intel-ipp is particularly slow - "
+	echo -e "-----------------------------------------------------------------------------------"
+	echo -e ""
+	echo -e ""
+	echo -e "-----------------------------------------------------------------------------------"
 	echo -e " \e[1m\e[5mATTENTION: \e[0m \e[1m\e[31mThis PKGBUILD don't work with yaourt! \e[0m "
-	echo " You must use the makepkg command for building this package"
-	echo "-----------------------------------------------------------------------------------"
-	echo ""
-	echo ""
-	echo "-----------------------------------------------------------------------------------"
-	echo -e "\e[1mOptions:\e[0m"
+	echo -e " You must use the makepkg command for building this package"
+	echo -e "-----------------------------------------------------------------------------------"
+	echo -e ""
+	echo -e ""
+	echo -e "-----------------------------------------------------------------------------------"
+	echo -e "\e[1m -- Options: -- \e[0m"
 	if  ${_remove_docs} ; then
-	  echo " Remove Documentation: YES "
+	  echo -e " Remove Documentation: YES "
 	else
-	  echo " Remove Documentation: NO "
+	  echo -e " Remove Documentation: NO "
 	fi
 
 	if  ${_remove_static_objects} ; then
@@ -247,9 +247,9 @@ build() {
 	else
 	  echo -e " Remove Static Objects: NO "
 	fi
-	echo "-----------------------------------------------------------------------------------"
-	echo ""
-	echo ""
+	echo -e "-----------------------------------------------------------------------------------"
+	echo -e ""
+	echo -e ""
 
 
 	cd ${srcdir}/opt/intel
@@ -278,6 +278,8 @@ package_intel-compiler-base() {
 	pkgdesc="Intel C/C++ compiler"
 	pkgver=${_year}.${_v_a}.${_v_b}
 	install=intel-composer.install
+	
+	echo -e " # intel_compiler-base: Start Building" 
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/profile.d
@@ -287,7 +289,7 @@ package_intel-compiler-base() {
 	cp ../intel-compiler-base.conf ${srcdir}/etc/ld.so.conf.d
 
 	cd ${srcdir}
-	
+	echo -e " # intel_compiler-base: Extracting RPMS" 
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerpro-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerpro-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerpro-vars-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
@@ -295,7 +297,8 @@ package_intel-compiler-base() {
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerproc-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerproc-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerproc-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-
+	
+	echo -e " # intel_compiler-base: Editing variables" 
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/bin
 
 	rm uninstall.sh
@@ -312,10 +315,12 @@ package_intel-compiler-base() {
 	rm loopprofileviewer.csh
 
 	if $_remove_docs ; then
+	  echo -e " # intel_compiler-base: Remove docs" 
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Samples
 	fi
 
+	echo -e " # intel_compiler-base: Coping man pages" 
         mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
 
 	cd ${_man_dir}
@@ -325,7 +330,7 @@ package_intel-compiler-base() {
 
 	cd ${srcdir}
 
-
+	echo -e " # intel_compiler-base: Move package"
 	mv ${srcdir}/opt ${pkgdir}
 	mv ${srcdir}/etc ${pkgdir}
 	mv ${srcdir}/usr ${pkgdir}
@@ -337,6 +342,8 @@ package_intel-fortran-compiler() {
 	pkgver=${_year}.${_v_a}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-composer.install
+
+	echo -e " # intel-fortran-compiler: Start Building" 
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/profile.d
@@ -351,10 +358,13 @@ package_intel-fortran-compiler() {
 
 	cd ${srcdir}
 	
+	echo -e " # intel-fortran-compiler: Extracting RPMS" 
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerprof-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerprof-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerprof-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
 
+
+	echo -e " # intel-fortran-compiler: Editing variables"
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/bin
 
 	rm *.csh
@@ -362,10 +372,12 @@ package_intel-fortran-compiler() {
 	rm ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/en_US/gs_resources/intel_logo.gif
 
 	if $_remove_docs ; then
+	  echo -e " # intel-fortran-compiler: Remove documentation"
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Samples
 	fi
 
+	echo -e " # intel-fortran-compiler: Coping man pages"
         mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
 
 	cd ${_man_dir}
@@ -375,7 +387,7 @@ package_intel-fortran-compiler() {
 
 	cd ${srcdir}
 	
-	
+	echo -e " # intel-fortran-compiler: Move package"
 	mv ${srcdir}/opt ${pkgdir}
 	mv ${srcdir}/etc ${pkgdir}
 	mv ${srcdir}/usr ${pkgdir}
@@ -386,6 +398,7 @@ package_intel-idb() {
 	pkgver=${_year}.${_v_a}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-composer.install
+	echo -e " # intel-idb: Start Building"
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
@@ -399,10 +412,12 @@ package_intel-idb() {
 
 	cd ${srcdir}
 	
+	echo -e " # intel-idb: Extracting RPS"
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-idb-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-idb-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-idbcdt-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
 
+	echo -e " # intel-idb: Editing variables"
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/bin
 	rm idbvars.csh
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' idbvars.sh
@@ -414,9 +429,11 @@ package_intel-idb() {
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' idbc
 
 	if $_remove_docs ; then
+	  echo -e " # intel-idb: Remove documentation"
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
+	echo -e " # intel-idb: Coping man pages"
 	mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
 
 	cd ${_man_dir}
@@ -426,6 +443,7 @@ package_intel-idb() {
 
 	cd ${srcdir}
 
+	echo -e " # intel-idb: Move package"
 	mv ${srcdir}/opt ${pkgdir}
 	
 	mkdir -p ${pkgdir}/etc
@@ -439,6 +457,8 @@ package_intel-ipp() {
 	depends=('intel-compiler-base')
 	install=intel-composer.install
 
+	echo -e " # intel-ipp: Start Building"
+
 	mkdir -p ${srcdir}/opt
 
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
@@ -450,11 +470,12 @@ package_intel-ipp() {
 	fi
 
 	cd ${srcdir}
-	
+	echo -e " # intel-ipp: Extracting RPMS"
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-common-${_v_b}-${_ipp_ver}.noarch.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-devel-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
 
+	echo -e " # intel-ipp: Editing variables"
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/bin
 	rm ippvars.csh
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' ippvars.sh
@@ -469,10 +490,12 @@ package_intel-ipp() {
 	done
 
 	if ${_remove_docs} ; then
+	  echo -e " # intel-ipp: Remove documentation"
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
 	if ${_remove_static_objects} ; then
+	  echo -e " # intel-ipp: Remove static objects"
 	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/libipp*.a
 	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/libipp*.a
 	  rmdir ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/
@@ -490,6 +513,8 @@ package_intel-mkl() {
 	depends=('intel-compiler-base')
 	install=intel-mkl.install
 	backup=('etc/intel-mkl-th.conf')
+
+	echo -e " # intel-mkl: Start Building"
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
@@ -509,10 +534,12 @@ package_intel-mkl() {
 
 	cd ${srcdir}
 	
+	echo -e " # intel-mkl: Extracting RPMS"
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-common-${_v_b}-${_mkl_ver}.noarch.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-devel-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
 
+	echo -e " # intel-mkl: Editing variables"
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/bin
 	rm mklvars.csh
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' mklvars.sh
@@ -524,16 +551,19 @@ package_intel-mkl() {
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' mklvars_${_i_arch}.sh
 
 	if ${_remove_docs} ; then
+	  echo -e " # intel-mkl: remove documentation"
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/examples
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/benchmarks
 	fi
 
 	if ${_remove_static_objects} ; then
+	  echo -e " # intel-mkl: remove static objects"
 	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/libmkl_*.a
 	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/mic/libmkl_*.a
 	fi
 
+	echo -e " # intel-mkl: Move package"
 	mv ${srcdir}/opt ${pkgdir}
 
 	mkdir -p ${pkgdir}/etc
@@ -547,6 +577,8 @@ package_intel-openmp() {
 	depends=('intel-compiler-base')
 	install=intel-composer.install
 
+	echo -e " # intel-openmp: Start Building"
+
 	mkdir -p ${srcdir}/opt
 
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
@@ -554,18 +586,18 @@ package_intel-openmp() {
 
 	cd ${srcdir}
 	
+	echo -e " # intel-openmp: Extracting RPMS"
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-openmp-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-openmp-devel-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
 
 	
 	if ${_remove_static_objects} ; then
-          echo "remove static"
-	  ls -al ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
-
-	  rm -f -v ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
-	  rm -f -v ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/mic/lib*.a
+	   echo -e " # intel-openmp: Remove static objects"
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
+	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/mic/lib*.a
 	fi	
 
+	echo -e " # intel-openmp: Move package"
 	mv ${srcdir}/opt ${pkgdir}
 
 	mkdir -p ${pkgdir}/etc
@@ -577,13 +609,17 @@ package_intel-sourcechecker() {
 	pkgver=${_year}.${_v_a}.${_v_b}
 	depends=('intel-compiler-base')
 
+	echo -e " # intel-sourcechecker: Start building"
+
 	mkdir -p ${srcdir}/opt
 
 	cd ${srcdir}
 	
+	echo -e " # intel-sourcechecker: Extracting RPMS"
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-sourcechecker-common-${_v_b}-${_sourcechecker_ver}.noarch.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-sourcechecker-devel-${_v_b}-${_sourcechecker_ver}.${_i_arch2}.rpm
 
+	echo -e " # intel-sourcechecker: Move package"
 	mv ${srcdir}/opt ${pkgdir}
 }
 
@@ -592,6 +628,8 @@ package_intel-tbb() {
 	pkgver=${_year}.${_v_a}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-tbb.install
+
+	echo -e " # intel-tbb: Start Building "
 
 	mkdir -p ${srcdir}/opt
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
@@ -606,9 +644,11 @@ package_intel-tbb() {
 
 	cd ${srcdir}
 	
+	echo -e " # intel-tbb: Extracting RPMS "
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-tbb-${_v_b}-${_tbb_ver}.noarch.rpm
 	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-tbb-devel-${_v_b}-${_tbb_ver}.noarch.rpm
 
+	echo -e " # intel-tbb: Editing variables "
 	cd ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin
 	rm tbbvars.csh
 
@@ -621,15 +661,17 @@ package_intel-tbb() {
 	sed -i 's/SUBSTITUTE_INSTALL_DIR_HERE/\/opt\/intel\/composerxe\/tbb/g' tbbvars.sh
 	chmod a+x tbbvars.sh
 
-	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch}
-	
+	echo -e " # intel-tbb: Remove unneeded libs and bin "
+	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch}	
 	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_not_arch}
 	
 	if $_remove_docs ; then
+	  echo -e " # intel-tbb: remove documentation "
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
 	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/examples
 	fi
 
+	echo -e " # intel-tbb: Move package "
 	mv ${srcdir}/opt ${pkgdir}
 	
 	mkdir -p ${pkgdir}/etc

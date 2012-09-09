@@ -1,5 +1,5 @@
 
 
-. /etc/intel-mkl.conf
+. /etc/intel-mkl-th.conf
 
 
