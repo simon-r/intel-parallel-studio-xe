@@ -44,6 +44,9 @@ _amd_64=false
 # set to true if you want to remove documentations and examples form the packages.
 _remove_docs=true
 
+########################################
+########################################
+# set to true if you want to remove the static objects form the libs .
 _remove_static_objects=true
 ########################################
 
@@ -140,7 +143,9 @@ fi
 _composer_xe_dir="composer_xe_${_year}.${_v_a}.${_v_b}"
 _parallel_studio_xe_dir="parallel_studio_xe_${_year}_${_i_arch}"
 
-_man_dir=${srcdir}/usr/share/man/man1/
+xe_build_dir=${srcdir}/cxe_build
+base_dir=${srcdir}/..
+_man_dir=${srcdir}/usr/share/man/man1
 
 
 source=("http://registrationcenter-download.intel.com/akdlm/irc_nas/${_dir_nr}/${_parallel_studio_xe_dir}.tgz" ${source[@]})
@@ -173,10 +178,32 @@ build() {
 	echo -e "\e[1mGithub: \e[0m https://github.com/simon-r/intel-parallel-studio-xe" 
 	echo -e "-----------------------------------------------------------------------------"
 
-	if [ -d ${srcdir}/opt/intel ] ; then
-	  rm -rf ${srcdir}/opt/intel
+	# test if the dirs are clean.
+	if [ -d ${srcdir}/opt ] ; then
+	  rm -rf ${srcdir}/opt
 	fi
 
+	if [ -d ${srcdir}/etc ] ; then
+	  rm -rf ${srcdir}/etc
+	fi
+
+	if [ -d ${srcdir}/usr ] ; then
+	  rm -rf ${srcdir}/usr
+	fi
+
+	if [ -d ${pkgdir}/opt ] ; then
+	  rm -rf ${pkgdir}/opt
+	fi
+
+	if [ -d ${pkgdir}/etc ] ; then
+	  rm -rf ${pkgdir}/etc
+	fi
+
+	if [ -d ${pkgdir}/usr ] ; then
+	  rm -rf ${pkgdir}/usr
+	fi
+
+	# START !
 	mkdir -p ${srcdir}/etc/profile.d
 
 	if [ "$CARCH" = "i686" ]; then
@@ -192,7 +219,7 @@ build() {
 	mkdir -p ${srcdir}/etc/ld.so.conf.d
 
 	_cnt=0
-	for f in ../*.lic ; do
+	for f in ${base_dir}/*.lic ; do
 	  _lic_file[_cnt]=$f
 	  _cnt=$(($_cnt+1))
 	done
@@ -209,7 +236,7 @@ build() {
 	fi
 
 	mkdir -p ${srcdir}/opt/intel/licenses
-	cp ../*.lic ${srcdir}/opt/intel/licenses
+	cp ${base_dir}/*.lic ${srcdir}/opt/intel/licenses
 
 	cp ${srcdir}/${_parallel_studio_xe_dir}/license.txt ${srcdir}/opt/intel/license.txt
 	
@@ -247,7 +274,8 @@ build() {
 	fi
 
 	if  ${_remove_static_objects} ; then
-	  echo -e "\e[1m Remove Static Objects: YES \e[0m "
+	  echo -e "\e[1m Remove Static Objects: YES \e[0m \e[1m\e[5mATTENTION !!!! \e[0m "
+	  echo -e "\e[1m If your software is based on the static objects edit the option at the line 50 of this PKGBUIL \e[0m "
 	else
 	  echo -e " Remove Static Objects: NO "
 	fi
@@ -290,7 +318,7 @@ package_intel-compiler-base() {
 	mkdir -p ${_man_dir}
 
 
-	cp ../intel-compiler-base.conf ${srcdir}/etc/ld.so.conf.d
+	cp ${srcdir}/intel-compiler-base.conf ${srcdir}/etc/ld.so.conf.d
 
 	cd ${srcdir}
 	echo -e " # intel_compiler-base: Extracting RPMS" 
