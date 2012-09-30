@@ -57,7 +57,7 @@ _v_b='079'
 
 _update=''
 
-pkgrel=2
+pkgrel=3
 
 _sp=''
 
@@ -142,10 +142,11 @@ fi
 
 _composer_xe_dir="composer_xe_${_year}.${_v_a}.${_v_b}"
 _parallel_studio_xe_dir="parallel_studio_xe_${_year}_${_i_arch}"
+rpm_dir=${srcdir}/${_parallel_studio_xe_dir}/rpm
 
 xe_build_dir=${srcdir}/cxe_build
 base_dir=${srcdir}/..
-_man_dir=${srcdir}/usr/share/man/man1
+_man_dir=${xe_build_dir}/usr/share/man/man1
 
 
 source=("http://registrationcenter-download.intel.com/akdlm/irc_nas/${_dir_nr}/${_parallel_studio_xe_dir}.tgz" ${source[@]})
@@ -190,37 +191,32 @@ build() {
 	if [ -d ${srcdir}/usr ] ; then
 	  rm -rf ${srcdir}/usr
 	fi
-
-	if [ -d ${pkgdir}/opt ] ; then
-	  rm -rf ${pkgdir}/opt
+  
+	if [ -d ${xe_build_dir} ] ; then 
+	  rm -rf ${xe_build_dir}
 	fi
 
-	if [ -d ${pkgdir}/etc ] ; then
-	  rm -rf ${pkgdir}/etc
-	fi
-
-	if [ -d ${pkgdir}/usr ] ; then
-	  rm -rf ${pkgdir}/usr
-	fi
+	mkdir -p ${xe_build_dir}
 
 	# START !
-	mkdir -p ${srcdir}/etc/profile.d
+	cd ${xe_build_dir}
+	mkdir -p ${xe_build_dir}/etc/profile.d
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../icc.sh > ${srcdir}/etc/profile.d/icc.sh
+	  sed 's/<arch>/ia32/' < ${srcdir}/icc.sh > ${xe_build_dir}/etc/profile.d/icc.sh
 	else
-	  sed 's/<arch>/intel64/' < ../icc.sh > ${srcdir}/etc/profile.d/icc.sh
+	  sed 's/<arch>/intel64/' < ${srcdir}/icc.sh > ${xe_build_dir}/etc/profile.d/icc.sh
 	fi
 
-	sed -i 's/<tbb_arch>/cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21/' ${srcdir}/etc/profile.d/icc.sh
+	#sed -i 's/<tbb_arch>/cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21/' ${xe_build_dir}/etc/profile.d/icc.sh
 
-	chmod a+x ${srcdir}/etc/profile.d/icc.sh
+	chmod a+x ${xe_build_dir}/etc/profile.d/icc.sh
 
-	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
 
 	_cnt=0
-	for f in ${base_dir}/*.lic ; do
-	  _lic_file[_cnt]=$f
+	for files in ${base_dir}/*.lic ; do
+	  _lic_file[_cnt]=${files}
 	  _cnt=$(($_cnt+1))
 	done
 
@@ -235,10 +231,10 @@ build() {
 	  return 1 ;
 	fi
 
-	mkdir -p ${srcdir}/opt/intel/licenses
-	cp ${base_dir}/*.lic ${srcdir}/opt/intel/licenses
+	mkdir -p ${xe_build_dir}/opt/intel/licenses
+	cp ${base_dir}/*.lic ${xe_build_dir}/opt/intel/licenses
 
-	cp ${srcdir}/${_parallel_studio_xe_dir}/license.txt ${srcdir}/opt/intel/license.txt
+	cp ${srcdir}/${_parallel_studio_xe_dir}/license.txt ${xe_build_dir}/opt/intel/license.txt
 	
 	echo -e ""
 	echo -e "-----------------------------------------------------------------------------------"
@@ -266,7 +262,8 @@ build() {
 	echo -e ""
 	echo -e ""
 	echo -e "-----------------------------------------------------------------------------------"
-	echo -e "\e[1m -- Options: -- \e[0m"
+	echo -e "\e[1m #################### \e[0m"
+	echo -e "\e[1m ##### Options: ##### \e[0m"
 	if  ${_remove_docs} ; then
 	  echo -e " Remove Documentation: YES "
 	else
@@ -274,8 +271,9 @@ build() {
 	fi
 
 	if  ${_remove_static_objects} ; then
-	  echo -e "\e[1m Remove Static Objects: YES \e[0m \e[1m\e[5mATTENTION !!!! \e[0m "
-	  echo -e "\e[1m If your software is based on the static objects edit the option at the line 50 of this PKGBUIL \e[0m "
+	  echo -e ""
+	  echo -e "\e[1m Remove Static Objects: YES \e[0m \e[1m\e[5m\e[31m ATTENTION !!!! \e[0m "
+	  echo -e "\e[1m If your software is based on the static objects edit the option at the line 50 of this PKGBUILD \e[0m "
 	else
 	  echo -e " Remove Static Objects: NO "
 	fi
@@ -284,7 +282,7 @@ build() {
 	echo -e ""
 
 
-	cd ${srcdir}/opt/intel
+	cd ${xe_build_dir}/opt/intel
 	ln -s ./${_composer_xe_dir} composerxe-${_year}
 	ln -s ./composerxe-${_year} composerxe
 
@@ -299,7 +297,7 @@ build() {
 	ln -s ./composerxe/tbb/ tbb
 	
 	_current_dir=`pwd`
-	if [ -d ${pkgdir}/opt ] ; then
+	if [ -d ${xe_build_dir}/opt ] ; then
 	  cd ${pkgdir}
 	  rm -rf opt
 	  cd $_current_dir
@@ -313,25 +311,25 @@ package_intel-compiler-base() {
 	
 	echo -e " # intel_compiler-base: Start Building" 
 
-	mkdir -p ${srcdir}/opt
-	mkdir -p ${srcdir}/etc/profile.d
+	mkdir -p ${xe_build_dir}/opt
+	mkdir -p ${xe_build_dir}/etc/profile.d
 	mkdir -p ${_man_dir}
 
 
-	cp ${srcdir}/intel-compiler-base.conf ${srcdir}/etc/ld.so.conf.d
+	cp ${srcdir}/intel-compiler-base.conf ${xe_build_dir}/etc/ld.so.conf.d
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	echo -e " # intel_compiler-base: Extracting RPMS" 
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerpro-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerpro-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerpro-vars-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerpro-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerpro-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerpro-vars-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
 	
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerproc-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerproc-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerproc-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerproc-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerproc-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerproc-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
 	
 	echo -e " # intel_compiler-base: Editing variables" 
-	cd ${srcdir}/opt/intel/${_composer_xe_dir}/bin
+	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/bin
 
 	rm uninstall.sh
 	rm *.csh
@@ -348,24 +346,24 @@ package_intel-compiler-base() {
 
 	if $_remove_docs ; then
 	  echo -e " # intel_compiler-base: Remove docs" 
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Samples
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Documentation
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Samples
 	fi
 
 	echo -e " # intel_compiler-base: Coping man pages" 
-        mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
+        mv ${xe_build_dir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
 	  gzip $f
 	done
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 
 	echo -e " # intel_compiler-base: Move package"
-	mv ${srcdir}/opt ${pkgdir}
-	mv ${srcdir}/etc ${pkgdir}
-	mv ${srcdir}/usr ${pkgdir}
+	mv ${xe_build_dir}/opt ${pkgdir}
+	mv ${xe_build_dir}/etc ${pkgdir}
+	mv ${xe_build_dir}/usr ${pkgdir}
 }
 
 
@@ -377,52 +375,52 @@ package_intel-fortran-compiler() {
 
 	echo -e " # intel-fortran-compiler: Start Building" 
 
-	mkdir -p ${srcdir}/opt
-	mkdir -p ${srcdir}/etc/profile.d
-	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${xe_build_dir}/opt
+	mkdir -p ${xe_build_dir}/etc/profile.d
+	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
 	mkdir -p ${_man_dir}
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-fortran.conf > ${srcdir}/etc/ld.so.conf.d/intel-fortran.conf
+	  sed 's/<arch>/ia32/' < ../intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-fortran.conf > ${srcdir}/etc/ld.so.conf.d/intel-fortran.conf
+	  sed 's/<arch>/intel64/' < ../intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
 	fi
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	
 	echo -e " # intel-fortran-compiler: Extracting RPMS" 
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerprof-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerprof-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-compilerprof-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerprof-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerprof-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-compilerprof-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
 
 
 	echo -e " # intel-fortran-compiler: Editing variables"
-	cd ${srcdir}/opt/intel/${_composer_xe_dir}/bin
+	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/bin
 
 	rm *.csh
 
-	rm ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation/en_US/gs_resources/intel_logo.gif
+	rm ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Documentation/en_US/gs_resources/intel_logo.gif
 
 	if $_remove_docs ; then
 	  echo -e " # intel-fortran-compiler: Remove documentation"
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Samples
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Documentation
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Samples
 	fi
 
 	echo -e " # intel-fortran-compiler: Coping man pages"
-        mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
+        mv ${xe_build_dir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
 	  gzip $f
 	done
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	
 	echo -e " # intel-fortran-compiler: Move package"
-	mv ${srcdir}/opt ${pkgdir}
-	mv ${srcdir}/etc ${pkgdir}
-	mv ${srcdir}/usr ${pkgdir}
+	mv ${xe_build_dir}/opt ${pkgdir}
+	mv ${xe_build_dir}/etc ${pkgdir}
+	mv ${xe_build_dir}/usr ${pkgdir}
 }
 
 package_intel-idb() {
@@ -432,25 +430,25 @@ package_intel-idb() {
 	install=intel-composer.install
 	echo -e " # intel-idb: Start Building"
 
-	mkdir -p ${srcdir}/opt
-	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${xe_build_dir}/opt
+	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
 	mkdir -p ${_man_dir}
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-idb.conf > ${srcdir}/etc/ld.so.conf.d/intel-idb.conf
+	  sed 's/<arch>/ia32/' < ../intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-idb.conf > ${srcdir}/etc/ld.so.conf.d/intel-idb.conf
+	  sed 's/<arch>/intel64/' < ../intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
 	fi
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	
 	echo -e " # intel-idb: Extracting RPS"
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-idb-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-idb-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-idbcdt-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-idb-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-idb-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-idbcdt-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
 
 	echo -e " # intel-idb: Editing variables"
-	cd ${srcdir}/opt/intel/${_composer_xe_dir}/bin
+	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/bin
 	rm idbvars.csh
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' idbvars.sh
 
@@ -462,25 +460,29 @@ package_intel-idb() {
 
 	if $_remove_docs ; then
 	  echo -e " # intel-idb: Remove documentation"
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
 	echo -e " # intel-idb: Coping man pages"
-	mv ${srcdir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${srcdir}/usr/share/man/man1/
+	mv ${xe_build_dir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
 	  gzip $f
 	done
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 
 	echo -e " # intel-idb: Move package"
-	mv ${srcdir}/opt ${pkgdir}
-	
-	mkdir -p ${pkgdir}/etc
-	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
-	mv ${srcdir}/usr ${pkgdir}
+# 	mv ${srcdir}/opt ${pkgdir}
+# 	
+# 	mkdir -p ${pkgdir}/etc
+# 	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
+# 	mv ${srcdir}/usr ${pkgdir}
+
+	mv ${xe_build_dir}/opt ${pkgdir}
+	mv ${xe_build_dir}/etc ${pkgdir}
+	mv ${xe_build_dir}/usr ${pkgdir}
 }
 
 package_intel-ipp() {
@@ -491,24 +493,24 @@ package_intel-ipp() {
 
 	echo -e " # intel-ipp: Start Building"
 
-	mkdir -p ${srcdir}/opt
+	mkdir -p ${xe_build_dir}/opt
 
-	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-ipp.conf > ${srcdir}/etc/ld.so.conf.d/intel-ipp.conf
+	  sed 's/<arch>/ia32/' < ${srcdir}/intel-ipp.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-ipp.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-ipp.conf > ${srcdir}/etc/ld.so.conf.d/intel-ipp.conf
+	  sed 's/<arch>/intel64/' < ${srcdir}/intel-ipp.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-ipp.conf
 	fi
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	echo -e " # intel-ipp: Extracting RPMS"
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-common-${_v_b}-${_ipp_ver}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-ipp-devel-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-ipp-common-${_v_b}-${_ipp_ver}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-ipp-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-ipp-devel-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
 
 	echo -e " # intel-ipp: Editing variables"
-	cd ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/bin
+	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/ipp/bin
 	rm ippvars.csh
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' ippvars.sh
 
@@ -518,26 +520,24 @@ package_intel-ipp() {
 
         # remove the unneeded and problematic ipp_minigzip and ipp_gzip
 	for _z_dir_name in 'ipp_zlib' 'ipp_gzip' 'ipp_bzip2'  ; do
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/interfaces/data-compression/${_z_dir_name}/bin/${_not_arch}
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/ipp/interfaces/data-compression/${_z_dir_name}/bin/${_not_arch}
 	done
 
 	if ${_remove_docs} ; then
 	  echo -e " # intel-ipp: Remove documentation"
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
 	if ${_remove_static_objects} ; then
 	  echo -e " # intel-ipp: Remove static objects"
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/libipp*.a
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/libipp*.a
-	  rmdir ${srcdir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/
+	  rm -f ${xe_build_dir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/libipp*.a
+	  rm -f ${xe_build_dir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/libipp*.a
+	  rmdir ${xe_build_dir}/opt/intel/${_composer_xe_dir}/ipp/lib/${_i_arch}/nonpic/
 	fi
 
 	echo -e " # intel-ipp: Move package"
-	mv ${srcdir}/opt ${pkgdir}
-
-	mkdir -p ${pkgdir}/etc
-	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
+	mv ${xe_build_dir}/opt ${pkgdir}
+	mv ${xe_build_dir}/etc ${pkgdir}
 }
 
 package_intel-mkl() {
@@ -549,31 +549,31 @@ package_intel-mkl() {
 
 	echo -e " # intel-mkl: Start Building"
 
-	mkdir -p ${srcdir}/opt
-	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${xe_build_dir}/opt
+	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
 	
-	mkdir -p ${srcdir}/etc/profile.d
+	mkdir -p ${xe_build_dir}/etc/profile.d
 
-	cp ../intel-mkl.sh ${srcdir}/etc/profile.d
-	chmod a+x ${srcdir}/etc/profile.d/intel-mkl.sh
+	cp ${srcdir}/intel-mkl.sh ${xe_build_dir}/etc/profile.d
+	chmod a+x ${xe_build_dir}/etc/profile.d/intel-mkl.sh
 
-	cp ../intel-mkl-th.conf ${srcdir}/etc/
+	cp ${srcdir}/intel-mkl-th.conf ${xe_build_dir}/etc/
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-mkl.conf > ${srcdir}/etc/ld.so.conf.d/intel-mkl.conf
+	  sed 's/<arch>/ia32/' < ${srcdir}/intel-mkl.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-mkl.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-mkl.conf > ${srcdir}/etc/ld.so.conf.d/intel-mkl.conf
+	  sed 's/<arch>/intel64/' < ${srcdir}/intel-mkl.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-mkl.conf
 	fi
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	
 	echo -e " # intel-mkl: Extracting RPMS"
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-common-${_v_b}-${_mkl_ver}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-mkl-devel-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-mkl-common-${_v_b}-${_mkl_ver}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-mkl-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-mkl-devel-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
 
 	echo -e " # intel-mkl: Editing variables"
-	cd ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/bin
+	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/mkl/bin
 	rm mklvars.csh
 	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' mklvars.sh
 
@@ -585,23 +585,24 @@ package_intel-mkl() {
 
 	if ${_remove_docs} ; then
 	  echo -e " # intel-mkl: remove documentation"
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/examples
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/benchmarks
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Documentation
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/mkl/examples
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/mkl/benchmarks
 	fi
 
 	if ${_remove_static_objects} ; then
 	  echo -e " # intel-mkl: remove static objects"
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/libmkl_*.a
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/mkl/lib/mic/libmkl_*.a
+	  rm -f ${xe_build_dir}/opt/intel/${_composer_xe_dir}/mkl/lib/${_i_arch}/libmkl_*.a
+	  rm -f ${xe_build_dir}/opt/intel/${_composer_xe_dir}/mkl/lib/mic/libmkl_*.a
 	fi
 
 	echo -e " # intel-mkl: Move package"
-	mv ${srcdir}/opt ${pkgdir}
+	mv ${xe_build_dir}/opt ${pkgdir}
 
-	mkdir -p ${pkgdir}/etc
-	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
-	mv ${srcdir}/etc/intel-mkl-th.conf ${pkgdir}/etc
+	#mkdir -p ${pkgdir}/etc
+	mv ${xe_build_dir}/etc ${pkgdir}
+	#mv ${xe_build_dir}/etc/profile.d ${pkgdir}/etc
+	#mv ${xe_build_dir}/etc/intel-mkl-th.conf ${pkgdir}/etc
 }
 
 package_intel-openmp() {
@@ -612,29 +613,29 @@ package_intel-openmp() {
 
 	echo -e " # intel-openmp: Start Building"
 
-	mkdir -p ${srcdir}/opt
+	mkdir -p ${xe_build_dir}/opt
 
-	mkdir -p ${srcdir}/etc/ld.so.conf.d
-	cp ../intel-openmp.conf ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
+	cp ${srcdir}/intel-openmp.conf ${xe_build_dir}/etc/ld.so.conf.d
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	
 	echo -e " # intel-openmp: Extracting RPMS"
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-openmp-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-openmp-devel-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-openmp-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-openmp-devel-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
 
 	
 	if ${_remove_static_objects} ; then
 	   echo -e " # intel-openmp: Remove static objects"
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
-	  rm -f ${srcdir}/opt/intel/${_composer_xe_dir}/compiler/lib/mic/lib*.a
+	  rm -f ${xe_build_dir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
+	  rm -f ${xe_build_dir}/opt/intel/${_composer_xe_dir}/compiler/lib/mic/lib*.a
 	fi	
 
 	echo -e " # intel-openmp: Move package"
-	mv ${srcdir}/opt ${pkgdir}
+	mv ${xe_build_dir}/opt ${pkgdir}
 
-	mkdir -p ${pkgdir}/etc
-	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
+	#mkdir -p ${pkgdir}/etc
+	mv ${xe_build_dir}/etc ${pkgdir}
 }
 
 package_intel-sourcechecker() {
@@ -644,16 +645,16 @@ package_intel-sourcechecker() {
 
 	echo -e " # intel-sourcechecker: Start building"
 
-	mkdir -p ${srcdir}/opt
+	mkdir -p ${xe_build_dir}/opt
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	
 	echo -e " # intel-sourcechecker: Extracting RPMS"
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-sourcechecker-common-${_v_b}-${_sourcechecker_ver}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-sourcechecker-devel-${_v_b}-${_sourcechecker_ver}.${_i_arch2}.rpm
+	bsdtar -xf  ${rpm_dir}/intel-sourcechecker-common-${_v_b}-${_sourcechecker_ver}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-sourcechecker-devel-${_v_b}-${_sourcechecker_ver}.${_i_arch2}.rpm
 
 	echo -e " # intel-sourcechecker: Move package"
-	mv ${srcdir}/opt ${pkgdir}
+	mv ${xe_build_dir}/opt ${pkgdir}
 }
 
 package_intel-tbb() {
@@ -664,51 +665,51 @@ package_intel-tbb() {
 
 	echo -e " # intel-tbb: Start Building "
 
-	mkdir -p ${srcdir}/opt
-	mkdir -p ${srcdir}/etc/ld.so.conf.d
+	mkdir -p ${xe_build_dir}/opt
+	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-tbb.conf > ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
-	  sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
+	  sed 's/<arch>/ia32/' < ${srcdir}/intel-tbb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-tbb.conf
+	  sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' ${xe_build_dir}/etc/ld.so.conf.d/intel-tbb.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-tbb.conf > ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
-	  sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' ${srcdir}/etc/ld.so.conf.d/intel-tbb.conf
+	  sed 's/<arch>/intel64/' < ${srcdir}/intel-tbb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-tbb.conf
+	  sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' ${xe_build_dir}/etc/ld.so.conf.d/intel-tbb.conf
 	fi
 
-	cd ${srcdir}
+	cd ${xe_build_dir}
 	
 	echo -e " # intel-tbb: Extracting RPMS "
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-tbb-${_v_b}-${_tbb_ver}.noarch.rpm
-	bsdtar -xf  ${_parallel_studio_xe_dir}/rpm/intel-tbb-devel-${_v_b}-${_tbb_ver}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-tbb-${_v_b}-${_tbb_ver}.noarch.rpm
+	bsdtar -xf  ${rpm_dir}/intel-tbb-devel-${_v_b}-${_tbb_ver}.noarch.rpm
 
 	echo -e " # intel-tbb: Editing variables "
-	cd ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin
+	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/tbb/bin
 	rm tbbvars.csh
 
 	sed -i 's/SUBSTITUTE_INSTALL_DIR_HERE/\/opt\/intel\/composerxe\/tbb/g' tbbvars.sh
 
 	chmod a+x tbbvars.sh
 
-	cd ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin
+	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/tbb/bin
 	#rm tbbvars.csh
 	sed -i 's/SUBSTITUTE_INSTALL_DIR_HERE/\/opt\/intel\/composerxe\/tbb/g' tbbvars.sh
 	chmod a+x tbbvars.sh
 
 	echo -e " # intel-tbb: Remove unneeded libs and bin "
-	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch}	
-	rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_not_arch}
+	rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/tbb/bin/${_not_arch}	
+	rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/tbb/lib/${_not_arch}
 	
 	if $_remove_docs ; then
 	  echo -e " # intel-tbb: remove documentation "
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/Documentation
-	  rm -rf ${srcdir}/opt/intel/${_composer_xe_dir}/tbb/examples
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Documentation
+	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/tbb/examples
 	fi
 
 	echo -e " # intel-tbb: Move package "
-	mv ${srcdir}/opt ${pkgdir}
+	mv ${xe_build_dir}/opt ${pkgdir}
 	
-	mkdir -p ${pkgdir}/etc
-	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
+	#mkdir -p ${pkgdir}/etc
+	mv ${xe_build_dir}/etc ${pkgdir}
 }
 
 pkgdesc="Intel C++ C and fortran compiler - Intel Parallel Studio XE  - intel compiler - icc icpc ifort ipp mkl "
