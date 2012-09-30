@@ -474,11 +474,6 @@ package_intel-idb() {
 	cd ${xe_build_dir}
 
 	echo -e " # intel-idb: Move package"
-# 	mv ${srcdir}/opt ${pkgdir}
-# 	
-# 	mkdir -p ${pkgdir}/etc
-# 	mv ${srcdir}/etc/ld.so.conf.d ${pkgdir}/etc
-# 	mv ${srcdir}/usr ${pkgdir}
 
 	mv ${xe_build_dir}/opt ${pkgdir}
 	mv ${xe_build_dir}/etc ${pkgdir}
@@ -598,11 +593,7 @@ package_intel-mkl() {
 
 	echo -e " # intel-mkl: Move package"
 	mv ${xe_build_dir}/opt ${pkgdir}
-
-	#mkdir -p ${pkgdir}/etc
 	mv ${xe_build_dir}/etc ${pkgdir}
-	#mv ${xe_build_dir}/etc/profile.d ${pkgdir}/etc
-	#mv ${xe_build_dir}/etc/intel-mkl-th.conf ${pkgdir}/etc
 }
 
 package_intel-openmp() {
@@ -633,8 +624,6 @@ package_intel-openmp() {
 
 	echo -e " # intel-openmp: Move package"
 	mv ${xe_build_dir}/opt ${pkgdir}
-
-	#mkdir -p ${pkgdir}/etc
 	mv ${xe_build_dir}/etc ${pkgdir}
 }
 
@@ -707,8 +696,6 @@ package_intel-tbb() {
 
 	echo -e " # intel-tbb: Move package "
 	mv ${xe_build_dir}/opt ${pkgdir}
-	
-	#mkdir -p ${pkgdir}/etc
 	mv ${xe_build_dir}/etc ${pkgdir}
 }
 
