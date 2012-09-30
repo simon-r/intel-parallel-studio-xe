@@ -92,7 +92,7 @@ arch=('i686' 'x86_64')
 license=('custom')
 makedepends=('libarchive' 'sed' 'gzip')
 
-source=('icc.sh' 
+source=('intel_compilers.sh' 
 	'intel-composer.install'
 	'intel-compiler-base.conf' 
 	'intel-fortran.conf'
@@ -203,14 +203,14 @@ build() {
 	mkdir -p ${xe_build_dir}/etc/profile.d
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ${srcdir}/icc.sh > ${xe_build_dir}/etc/profile.d/icc.sh
+	  sed 's/<arch>/ia32/' < ${srcdir}/intel_compilers.sh > ${xe_build_dir}/etc/profile.d/intel_compilers.sh
 	else
-	  sed 's/<arch>/intel64/' < ${srcdir}/icc.sh > ${xe_build_dir}/etc/profile.d/icc.sh
+	  sed 's/<arch>/intel64/' < ${srcdir}/intel_compilers.sh > ${xe_build_dir}/etc/profile.d/intel_compilers.sh
 	fi
 
-	#sed -i 's/<tbb_arch>/cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21/' ${xe_build_dir}/etc/profile.d/icc.sh
+	#sed -i 's/<tbb_arch>/cc4\.1\.0_libc2\.4_kernel2\.6\.16\.21/' ${xe_build_dir}/etc/profile.d/intel_compilers.sh
 
-	chmod a+x ${xe_build_dir}/etc/profile.d/icc.sh
+	chmod a+x ${xe_build_dir}/etc/profile.d/intel_compilers.sh
 
 	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
 
