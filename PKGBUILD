@@ -119,7 +119,7 @@ sha256sums=(
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'
 	'335307bc002d4b7e4a05ef382599a24465562ff98e980d087b7c5ac9c7ed8763'
 	'5e68c529c65cac54218026c869e54b2ddb268179725fc1e6b56d920470dad999'
-	'bfd7daab7518a63f322fa011a84ea210e0bbc14f0bfacfaa16d477513c35c950'
+	'11398c0ae2e2011902b1d6356d916d41bb8b54d39d090c6c83630f4b0e84e93a'
         'e515cb28bf40cdb0db818db6a2688a0028575153a1b9d5acfb0bc5f13fe45722'
 	'8c6a1f7b1b12d498e68b3085d8b2fcd050505209b7c0f2b870ba5f65ee135a90'
 	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'
@@ -151,6 +151,14 @@ _man_dir=${xe_build_dir}/usr/share/man/man1
 
 source=("http://registrationcenter-download.intel.com/akdlm/irc_nas/${_dir_nr}/${_parallel_studio_xe_dir}.tgz" ${source[@]})
 
+extract_rpms() {
+  cd $2
+  for rpm_file in ${rpm_dir}/$1 ; do
+    echo -e "    Extracting: ${rpm_file}"
+    bsdtar -xf ${rpm_file} 
+  done
+}
+
 build() {
 
 	echo -e "-----------------------------------------------------------------------------"
@@ -179,7 +187,7 @@ build() {
 	echo -e "\e[1mGithub: \e[0m https://github.com/simon-r/intel-parallel-studio-xe" 
 	echo -e "-----------------------------------------------------------------------------"
 
-	# test if the dirs are clean.
+	#  clean the builds dirs
 	if [ -d ${srcdir}/opt ] ; then
 	  rm -rf ${srcdir}/opt
 	fi
@@ -320,13 +328,9 @@ package_intel-compiler-base() {
 
 	cd ${xe_build_dir}
 	echo -e " # intel_compiler-base: Extracting RPMS" 
-	bsdtar -xf  ${rpm_dir}/intel-compilerpro-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
-	bsdtar -xf  ${rpm_dir}/intel-compilerpro-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-	bsdtar -xf  ${rpm_dir}/intel-compilerpro-vars-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
 	
-	bsdtar -xf  ${rpm_dir}/intel-compilerproc-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-	bsdtar -xf  ${rpm_dir}/intel-compilerproc-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
-	bsdtar -xf  ${rpm_dir}/intel-compilerproc-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
+	extract_rpms 'intel-compilerpro-*.rpm'  $xe_build_dir
+	extract_rpms 'intel-compilerproc-*.rpm'  $xe_build_dir
 	
 	echo -e " # intel_compiler-base: Editing variables" 
 	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/bin
@@ -389,10 +393,8 @@ package_intel-fortran-compiler() {
 	cd ${xe_build_dir}
 	
 	echo -e " # intel-fortran-compiler: Extracting RPMS" 
-	bsdtar -xf  ${rpm_dir}/intel-compilerprof-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-	bsdtar -xf  ${rpm_dir}/intel-compilerprof-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
-	bsdtar -xf  ${rpm_dir}/intel-compilerprof-devel-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-
+	
+	extract_rpms 'intel-compilerprof-*.rpm'  $xe_build_dir
 
 	echo -e " # intel-fortran-compiler: Editing variables"
 	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/bin
@@ -443,9 +445,7 @@ package_intel-idb() {
 	cd ${xe_build_dir}
 	
 	echo -e " # intel-idb: Extracting RPS"
-	bsdtar -xf  ${rpm_dir}/intel-idb-common-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
-	bsdtar -xf  ${rpm_dir}/intel-idb-${_v_b}-${_icc_ver}-${_v_a}.${_i_arch2}.rpm
-	bsdtar -xf  ${rpm_dir}/intel-idbcdt-${_v_b}-${_icc_ver}-${_v_a}.noarch.rpm
+	extract_rpms 'intel-idb*.rpm'  $xe_build_dir
 
 	echo -e " # intel-idb: Editing variables"
 	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/bin
@@ -500,9 +500,8 @@ package_intel-ipp() {
 
 	cd ${xe_build_dir}
 	echo -e " # intel-ipp: Extracting RPMS"
-	bsdtar -xf  ${rpm_dir}/intel-ipp-common-${_v_b}-${_ipp_ver}.noarch.rpm
-	bsdtar -xf  ${rpm_dir}/intel-ipp-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
-	bsdtar -xf  ${rpm_dir}/intel-ipp-devel-${_v_b}-${_ipp_ver}.${_i_arch2}.rpm
+
+	extract_rpms 'intel-ipp-*.rpm'  $xe_build_dir
 
 	echo -e " # intel-ipp: Editing variables"
 	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/ipp/bin
@@ -563,9 +562,7 @@ package_intel-mkl() {
 	cd ${xe_build_dir}
 	
 	echo -e " # intel-mkl: Extracting RPMS"
-	bsdtar -xf  ${rpm_dir}/intel-mkl-common-${_v_b}-${_mkl_ver}.noarch.rpm
-	bsdtar -xf  ${rpm_dir}/intel-mkl-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
-	bsdtar -xf  ${rpm_dir}/intel-mkl-devel-${_v_b}-${_mkl_ver}.${_i_arch2}.rpm
+	extract_rpms 'intel-mkl-*.rpm'  $xe_build_dir
 
 	echo -e " # intel-mkl: Editing variables"
 	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/mkl/bin
@@ -612,8 +609,8 @@ package_intel-openmp() {
 	cd ${xe_build_dir}
 	
 	echo -e " # intel-openmp: Extracting RPMS"
-	bsdtar -xf  ${rpm_dir}/intel-openmp-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
-	bsdtar -xf  ${rpm_dir}/intel-openmp-devel-${_v_b}-${_openmp_ver}.${_i_arch2}.rpm
+
+	extract_rpms 'intel-openmp-*.rpm'  $xe_build_dir
 
 	
 	if ${_remove_static_objects} ; then
@@ -639,8 +636,9 @@ package_intel-sourcechecker() {
 	cd ${xe_build_dir}
 	
 	echo -e " # intel-sourcechecker: Extracting RPMS"
-	bsdtar -xf  ${rpm_dir}/intel-sourcechecker-common-${_v_b}-${_sourcechecker_ver}.noarch.rpm
-	bsdtar -xf  ${rpm_dir}/intel-sourcechecker-devel-${_v_b}-${_sourcechecker_ver}.${_i_arch2}.rpm
+
+	extract_rpms 'intel-sourcechecker-*.rpm'  $xe_build_dir
+
 
 	echo -e " # intel-sourcechecker: Move package"
 	mv ${xe_build_dir}/opt ${pkgdir}
@@ -668,8 +666,8 @@ package_intel-tbb() {
 	cd ${xe_build_dir}
 	
 	echo -e " # intel-tbb: Extracting RPMS "
-	bsdtar -xf  ${rpm_dir}/intel-tbb-${_v_b}-${_tbb_ver}.noarch.rpm
-	bsdtar -xf  ${rpm_dir}/intel-tbb-devel-${_v_b}-${_tbb_ver}.noarch.rpm
+	extract_rpms 'intel-tbb-*.rpm'  $xe_build_dir
+
 
 	echo -e " # intel-tbb: Editing variables "
 	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/tbb/bin
