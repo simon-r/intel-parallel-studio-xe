@@ -612,13 +612,6 @@ package_intel-openmp() {
 
 	extract_rpms 'intel-openmp-*.rpm'  $xe_build_dir
 
-	
-	if ${_remove_static_objects} ; then
-	   echo -e " # intel-openmp: Remove static objects"
-	  rm -f ${xe_build_dir}/opt/intel/${_composer_xe_dir}/compiler/lib/${_i_arch}/lib*.a
-	  rm -f ${xe_build_dir}/opt/intel/${_composer_xe_dir}/compiler/lib/mic/lib*.a
-	fi	
-
 	echo -e " # intel-openmp: Move package"
 	mv ${xe_build_dir}/opt ${pkgdir}
 	mv ${xe_build_dir}/etc ${pkgdir}
