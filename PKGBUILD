@@ -55,7 +55,7 @@ _year='2013'
 _v_a='0'
 _v_b='079' 
 
-_update=''
+_update='update1'
 
 pkgrel=3
 
@@ -63,7 +63,7 @@ _sp=''
 
 pkgver=${_year}.${_v_a}.${_v_b}
 
-_dir_nr='2749'
+_dir_nr='2872'
 
 options=(strip)
 
@@ -141,7 +141,7 @@ else
 fi
 
 _composer_xe_dir="composer_xe_${_year}.${_v_a}.${_v_b}"
-_parallel_studio_xe_dir="parallel_studio_xe_${_year}_${_i_arch}"
+_parallel_studio_xe_dir="parallel_studio_xe_${_year}_${update}_${_i_arch}"
 rpm_dir=${srcdir}/${_parallel_studio_xe_dir}/rpm
 
 xe_build_dir=${srcdir}/cxe_build
