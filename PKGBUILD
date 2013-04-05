@@ -135,6 +135,8 @@ else
     sha256sums=('081bc3d617f04243d459d92d05398df1a3634faf3de554346f732ed83ed4ef06' ${sha256sums[@]} )
 fi
 
+ _parallel_studio_xe_dir="parallel_studio_xe_${_year}_${_update}_${_i_arch}"
+
 source=("http://registrationcenter-download.intel.com/akdlm/irc_nas/${_dir_nr}/${_parallel_studio_xe_dir}.tgz" ${source[@]})
 
 extract_rpms() {
