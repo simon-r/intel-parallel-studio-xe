@@ -62,12 +62,12 @@ pkgrel=1
 _sp='sp1'
 
 _icc_ver='14.0'
-_ipp_ver='8.0-1'
-_mkl_ver='11.1-0'
-_openmp_ver='14.0-0'
-_sourcechecker_ver='14.0-0'
+_ipp_ver='8.0.1'
+_mkl_ver='11.1.0'
+_openmp_ver='14.0.0'
+_sourcechecker_ver='14.0.0'
 
-_tbb_ver='4.1-4'
+_tbb_ver='4.1.4'
 
 
 pkgver=${_year}.${_icc_ver}.${_v_a}.${_v_b}
@@ -106,6 +106,7 @@ source=('intel_compilers.sh'
 	)
 
 sha256sums=( 
+	'ba65fdf7afbac0276a948ef8d4e1578297a0115548d5f3465c7ed4012030f696' # parralel studio main pkg
 	'338041f924d8f3ac31d349bca57f8ab66f094a5bb53d4f821f48fa710a112111' # intel_compilers.sh
 	'b7e1a3849c62f293245221d7ab5ee35c0e737b90b3eb4ae83c1eb41023d4e3ec' # intel-composer.install
 	'31ac4d0f30a93fe6393f48cb13761d7d1ce9719708c76a377193d96416bed884' # intel-compiler-base.conf
@@ -131,14 +132,14 @@ if [ "$CARCH" = "i686" ]; then
     _not_arch='intel64'
     _not_arch2='x86_64'
 
-    sha256sums=( 'ba65fdf7afbac0276a948ef8d4e1578297a0115548d5f3465c7ed4012030f696' ${sha256sums[@]} )
+    #sha256sums=( 'ba65fdf7afbac0276a948ef8d4e1578297a0115548d5f3465c7ed4012030f696' ${sha256sums[@]} )
 else
     _i_arch='intel64' 
     _i_arch2='x86_64'
 
     _not_arch='ia32' 
     _not_arch2='i486'
-    sha256sums=('ba65fdf7afbac0276a948ef8d4e1578297a0115548d5f3465c7ed4012030f696' ${sha256sums[@]} )
+    #sha256sums=('ba65fdf7afbac0276a948ef8d4e1578297a0115548d5f3465c7ed4012030f696' ${sha256sums[@]} )
 fi
 
  _parallel_studio_xe_dir="parallel_studio_xe_${_year}_${_sp}"
@@ -155,6 +156,9 @@ extract_rpms() {
 }
 
 set_build_vars() {
+
+  _pkg_ver=${_year}.${_icc_ver}.${_v_a}.${_v_b}
+
   _composer_xe_dir="composer_xe_${_year}_${_sp}.${_v_a}.${_v_b}"
   _parallel_studio_xe_dir="parallel_studio_xe_${_year}_${_sp}"
   rpm_dir=${srcdir}/${_parallel_studio_xe_dir}/rpm
@@ -342,7 +346,7 @@ package_intel-compiler-base() {
 	set_build_vars
 
 	pkgdesc="Intel C/C++ compiler"
-	pkgver=${_year}.${_v_a}.${_v_b}
+	pkgver=${_pkg_ver}
 	install=intel-composer.install
 	
 	echo -e " # intel_compiler-base: Start Building" 
@@ -400,8 +404,11 @@ package_intel-compiler-base() {
 
 
 package_intel-fortran-compiler() {
+
+	set_build_vars
+
 	pkgdesc="Intel Fortran compiler"
-	pkgver=${_year}.${_v_a}.${_v_b}
+	pkgver=${_pkg_ver}
 	depends=('intel-compiler-base')
 	install=intel-composer.install
 
@@ -457,8 +464,11 @@ package_intel-fortran-compiler() {
 }
 
 package_intel-idb() {
+
+	set_build_vars
+
 	pkgdesc="Intel C/C++ debugger"
-	pkgver=${_year}.${_v_a}.${_v_b}
+	pkgver=${_pkg_ver}
 	depends=('intel-compiler-base')
 	install=intel-composer.install
 	echo -e " # intel-idb: Start Building"
@@ -512,8 +522,11 @@ package_intel-idb() {
 }
 
 package_intel-ipp() {
+
+	set_build_vars
+
 	pkgdesc="Intel Integrated Performance Primitives"
-	pkgver=${_year}.${_v_a}.${_v_b}
+	pkgver=${_year}.${_ipp_ver}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-composer.install
 
@@ -566,8 +579,11 @@ package_intel-ipp() {
 }
 
 package_intel-mkl() {
+
+	set_build_vars
+
 	pkgdesc="Intel Math Kernel Library (Intel® MKL) "
-	pkgver=${_year}.${_v_a}.${_v_b}
+	pkgver=${_year}.${_mkl_ver}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-mkl.install
 	backup=('etc/intel-mkl-th.conf')
@@ -625,8 +641,11 @@ package_intel-mkl() {
 }
 
 package_intel-openmp() {
+
+	set_build_vars
+
 	pkgdesc="Intel OpenMP Library"
-	pkgver=${_year}.${_v_a}.${_v_b}
+	pkgver=${_year}.${_openmp_ver}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-composer.install
 
@@ -649,8 +668,11 @@ package_intel-openmp() {
 }
 
 package_intel-sourcechecker() {
+
+	set_build_vars
+
 	pkgdesc="Intel Source Checker"
-	pkgver=${_year}.${_v_a}.${_v_b}
+	pkgver=${_year}.${_sourcechecker_ver}.${_v_b}
 	depends=('intel-compiler-base')
 
 	echo -e " # intel-sourcechecker: Start building"
@@ -669,8 +691,11 @@ package_intel-sourcechecker() {
 }
 
 package_intel-tbb() {
+
+	set_build_vars
+
 	pkgdesc="Intel Threading Building Blocks (TBB)"
-	pkgver=${_year}.${_v_a}.${_v_b}
+	pkgver=${_year}.${_tbb_ver}.${_v_b}
 	depends=('intel-compiler-base')
 	install=intel-tbb.install
 
