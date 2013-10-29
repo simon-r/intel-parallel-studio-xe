@@ -74,7 +74,7 @@ pkgver=${_year}.${_icc_ver}.${_v_a}.${_v_b}
 
 _dir_nr='3447'
 
-options=(strip)
+options=(strip libtool staticlibs)
 
 
 if $_amd_64 ; then
