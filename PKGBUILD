@@ -32,7 +32,7 @@
 
 pkgname=('intel-parallel-studio-xe')
 true && pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-idb' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb' 'intel-vtune-amplifier-xe' )
-#true && pkgname=('intel-compiler-base'  'intel-vtune-amplifier-xe'  )
+true && pkgname=('intel-compiler-base'  'intel-advisor-xe'  )
 
 PKGEXT='.pkg.tar.gz'
 
@@ -97,6 +97,7 @@ source=(
 	"http://registrationcenter-download.intel.com/akdlm/irc_nas/${_dir_nr}/${_parallel_studio_xe_dir}.tgz"
 	'intel_compilers.sh'
 	'intel_vtune-amplifier-xe.sh'
+	'intel_advisor-xe.sh'
 	'intel-composer.install'
 	'intel-compiler-base.conf' 
 	'intel-fortran.conf'
@@ -120,6 +121,7 @@ sha256sums=(
 	'5d0147c6907ed7950d7f14b615785f5e3c7977c62368f4a8ec7b06be758d614a' # parallel_studio_xe_2013_sp1_update1.tgz
 	'338041f924d8f3ac31d349bca57f8ab66f094a5bb53d4f821f48fa710a112111' # intel_compilers.sh
 	'7da22140b9d8277d06d88f6bd37cb77ed17bc87d4f7ec5958587416639955991' # intel_vtune-amplifier-xe.sh
+	'292a9eea2c9a836ee9dc0d4ff28fc741d5548a3182e4f75aec7b93e1dd7b4f21' # intel_advisor-xe.sh
 	'3f96dec03111e69d16bb363acf4d0570e8a9526c09e5e542a7558f1b26d043ef' # intel-composer.install
 	'31ac4d0f30a93fe6393f48cb13761d7d1ce9719708c76a377193d96416bed884' # intel-compiler-base.conf
 	'c165386ba33b25453d4f5486b7fefcdba7d31e156ad280cbdfa13ed924b01bef' # intel-fortran.conf
@@ -772,7 +774,7 @@ package_intel-vtune-amplifier-xe() {
 	  sed -i 's/<arch>/bin64/g' ${srcdir}/intel_vtune-amplifier-xe.sh
 	fi
 	cp ${srcdir}/intel_vtune-amplifier-xe.sh ${xe_build_dir}/etc/ld.so.conf.d
-	chmod a+x ${xe_build_dir}/etc/ld.so.conf.d
+	chmod a+x ${xe_build_dir}/etc/ld.so.conf.d/intel_vtune-amplifier-xe.sh
 	
 	cd ${xe_build_dir}
 	echo -e " # intel-vtune-amplifier-xe: Extracting RPMS "
@@ -803,10 +805,35 @@ package_intel-advisor-xe() {
 	
 	echo -e " # intel-advisor-xe: Start building"
 	mkdir -p ${xe_build_dir}/opt
+	mkdir -p ${xe_build_dir}/etc/ld.so.conf.d
+	mkdir -p ${_man_dir}	
+	
+	echo -e " # intel-advisor-xe: Editing variables "
+	if [ "$CARCH" = "i686" ]; then
+	  sed -i 's/<arch>/bin32/g' ${srcdir}/intel_advisor-xe.sh
+	else
+	  sed -i 's/<arch>/bin64/g' ${srcdir}/intel_advisor-xe.sh
+	fi
+	cp ${srcdir}/intel_advisor-xe.sh ${xe_build_dir}/etc/ld.so.conf.d
+	chmod a+x ${xe_build_dir}/etc/ld.so.conf.d/intel_advisor-xe.sh	
 	
 	cd ${xe_build_dir}
 	echo -e " # intel-advisor-xe: Extracting RPMS "
 	extract_rpms 'intel-advisor-xe-*.rpm'  $xe_build_dir
+	
+	echo -e " # intel-advisor-xe: Coping man pages"
+	mv ${xe_build_dir}/opt/intel/advisor_xe_2013/man/man1/*.1 ${_man_dir}
+
+	cd ${_man_dir}
+	for f in *.1 ; do
+	  gzip $f
+	done
+	
+	if $_remove_docs ; then
+	  echo -e " # intel-vtune-amplifier-xe: remove documentation "
+	  rm -rf ${xe_build_dir}/opt/intel/advisor_xe_2013/samples
+	  rm -rf ${xe_build_dir}/opt/intel/advisor_xe_2013/documentation
+	fi
 	
 	echo -e " # intel-advisor-xe: Move package"
 	mv ${xe_build_dir}/opt ${pkgdir}
