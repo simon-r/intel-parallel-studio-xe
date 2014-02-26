@@ -55,7 +55,7 @@ _year='2013'
 _v_a='1'
 _v_b='106' 
 
-_update='update1'
+_update='update2'
 
 pkgrel=1
 
@@ -75,7 +75,7 @@ _tbb_ver='4.2.1'
 
 pkgver=${_year}.${_icc_ver}.${_v_a}.${_v_b}
 
-_dir_nr='3644'
+_dir_nr='3949'
 
 options=(strip libtool staticlibs)
 
