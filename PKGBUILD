@@ -29,8 +29,8 @@
 #     You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-pkgname=('intel-parallel-studio-xe')
+pkgbase="intel-parallel-studio-xe"
+pkgname="intel-parallel-studio-xe"
 true && pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-idb' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb' 'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe' )
 #true && pkgname=('intel-compiler-base'  'intel-inspector-xe'  )
 
