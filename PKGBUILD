@@ -31,8 +31,8 @@
 
 pkgbase="intel-parallel-studio-xe"
 pkgname="intel-parallel-studio-xe"
-true && pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-idb' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb' 'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe' )
-#true && pkgname=('intel-compiler-base'  'intel-inspector-xe'  )
+true && pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb' 'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe' )
+#true && pkgname=('intel-compiler-base'  'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe'  )
 
 PKGEXT='.pkg.tar.gz'
 
@@ -51,31 +51,31 @@ _remove_static_objects_mkl=true
 _remove_static_objects_ipp=true
 ########################################
 
-_year='2013'
-_v_a='2'
-_v_b='144' 
+_year='2015'
+_v_a='0'
+_v_b='090' 
 
-_update='update2'
+_update=''
 
 pkgrel=1
 
-_sp='sp1'
+_sp=''
 
-_icc_ver='14.0.2'
-_ipp_ver='8.1.0'
-_mkl_ver='11.1.2'
-_openmp_ver='14.0.2'
-_sourcechecker_ver='14.0.2'
-_vtune_ver='13.1.15'
-_advisor_ver='13.1.50'
-_inspector_ver='13.1.9'
+_icc_ver='15.0.0'
+_ipp_ver='8.2.0'
+_mkl_ver='11.2.0'
+_openmp_ver='15.0.0'
+_sourcechecker_ver='15.0.0'
+_vtune_ver='1.0.367959'
+_advisor_ver='1.0.367266'
+_inspector_ver='1.0.366509'
 
-_tbb_ver='4.2.3'
+_tbb_ver='4.3.0'
 
 
 pkgver=${_year}.${_icc_ver}.${_v_a}.${_v_b}
 
-_dir_nr='3949'
+_dir_nr='4584'
 
 options=(strip libtool staticlibs)
 
@@ -120,7 +120,7 @@ source=(
 
 
 sha256sums=(
-	'235c0f54832879e27afa2c11d7a4cc72bd5bcc6241963024a28cc9e1c74342f0' # parallel_studio_xe_2013_sp1_update1.tgz
+	'31abe447b1db457b38547dfbf0fd7e434cb45d5734892ec3ef95ef5f4d2f8ae2' # parallel_studio_xe_2013_sp1_update1.tgz
 	'338041f924d8f3ac31d349bca57f8ab66f094a5bb53d4f821f48fa710a112111' # intel_compilers.sh
 	'7da22140b9d8277d06d88f6bd37cb77ed17bc87d4f7ec5958587416639955991' # intel_vtune-amplifier-xe.sh
 	'292a9eea2c9a836ee9dc0d4ff28fc741d5548a3182e4f75aec7b93e1dd7b4f21' # intel_advisor-xe.sh
@@ -171,7 +171,7 @@ extract_rpms() {
 
 set_build_vars() {
   _pkg_ver=${_year}.${_icc_ver}.${_v_a}.${_v_b}
-  _composer_xe_dir="composer_xe_${_year}_${_sp}.${_v_a}.${_v_b}"
+  _composer_xe_dir="composer_xe_${_year}.${_v_a}.${_v_b}"
   rpm_dir=${srcdir}/${_parallel_studio_xe_dir}/rpm
   xe_build_dir=${srcdir}/cxe_build
   base_dir=${srcdir}/..
@@ -785,7 +785,7 @@ package_intel-vtune-amplifier-xe() {
 	extract_rpms 'intel-vtune-amplifier-xe-*.rpm'  $xe_build_dir
 	
 	echo -e " # intel-vtune-amplifier-xe: Coping man pages"
-	mv ${xe_build_dir}/opt/intel/vtune_amplifier_xe_2013/man/man1/*.1 ${_man_dir}
+	mv ${xe_build_dir}/opt/intel/vtune_amplifier_xe_${_year}.${_vtune_ver}/man/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
@@ -794,8 +794,8 @@ package_intel-vtune-amplifier-xe() {
 	
 	if $_remove_docs ; then
 	  echo -e " # intel-vtune-amplifier-xe: remove documentation "
-	  rm -rf ${xe_build_dir}/opt/intel/vtune_amplifier_xe_2013/samples
-	  rm -rf ${xe_build_dir}/opt/intel/vtune_amplifier_xe_2013/documentation
+	  rm -rf ${xe_build_dir}/opt/intel/vtune_amplifier_xe_${_year}.${_vtune_ver}/samples
+	  rm -rf ${xe_build_dir}/opt/intel/vtune_amplifier_xe_${_year}.${_vtune_ver}/documentation
 	fi	
 	
 	echo -e " # intel-vtune-amplifier-xe: Move package"
@@ -827,7 +827,7 @@ package_intel-advisor-xe() {
 	extract_rpms 'intel-advisor-xe-*.rpm'  $xe_build_dir
 	
 	echo -e " # intel-advisor-xe: Coping man pages"
-	mv ${xe_build_dir}/opt/intel/advisor_xe_2013/man/man1/*.1 ${_man_dir}
+	mv ${xe_build_dir}/opt/intel/advisor_xe_${_year}.${_advisor_ver}/man/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
@@ -836,8 +836,8 @@ package_intel-advisor-xe() {
 	
 	if $_remove_docs ; then
 	  echo -e " # intel-vtune-amplifier-xe: remove documentation "
-	  rm -rf ${xe_build_dir}/opt/intel/advisor_xe_2013/samples
-	  rm -rf ${xe_build_dir}/opt/intel/advisor_xe_2013/documentation
+	  rm -rf ${xe_build_dir}/opt/intel/advisor_xe_${_year}.${_advisor_ver}/samples
+	  rm -rf ${xe_build_dir}/opt/intel/advisor_xe_${_year}.${_advisor_ver}/documentation
 	fi
 	
 	echo -e " # intel-advisor-xe: Move package"
@@ -869,7 +869,7 @@ package_intel-inspector-xe() {
 	extract_rpms 'intel-inspector-xe-*.rpm'  $xe_build_dir
 	
 	echo -e " # intel-inspector-xe: Coping man pages"
-	mv ${xe_build_dir}/opt/intel/inspector_xe_2013/man/man1/*.1 ${_man_dir}
+	mv ${xe_build_dir}/opt/intel/inspector_xe_${_year}.${_inspector_ver}/man/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
@@ -878,8 +878,8 @@ package_intel-inspector-xe() {
 	
 	if $_remove_docs ; then
 	  echo -e " # intel-vtune-amplifier-xe: remove documentation "
-	  rm -rf ${xe_build_dir}/opt/intel/inspector_xe_2013/samples
-	  rm -rf ${xe_build_dir}/opt/intel/inspector_xe_2013/documentation
+	  rm -rf ${xe_build_dir}/opt/intel/inspector_xe_${_year}.${_inspector_ver}/samples
+	  rm -rf ${xe_build_dir}/opt/intel/inspector_xe_${_year}.${_inspector_ver}/documentation
 	fi
 	
 	echo -e " # intel-inspector-xe: Move package"
