@@ -31,8 +31,8 @@
 
 pkgbase="intel-parallel-studio-xe"
 pkgname="intel-parallel-studio-xe"
-true && pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb' 'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe' )
-#true && pkgname=('intel-compiler-base'  'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe'  )
+#true && pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb' 'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe' )
+true && pkgname=('intel-compiler-base'  'intel-gdb'  )
 
 PKGEXT='.pkg.tar.gz'
 
@@ -105,7 +105,7 @@ source=(
 	'intel-fortran.conf'
 	'intel-openmp.conf'
 	'intel-mkl.conf' 
-	'intel-idb.conf'
+	#'intel-gdb.conf'
 	'intel-ipp.conf'
 	'intel-tbb.conf'
 	'intel-mkl.sh'
@@ -130,7 +130,7 @@ sha256sums=(
 	'c165386ba33b25453d4f5486b7fefcdba7d31e156ad280cbdfa13ed924b01bef' # intel-fortran.conf
 	'99cc9683cc75934cc21bb5a09f6ad83365ee48712719bfd914de9444695eed13' # intel-openmp.conf
 	'a856326362e9b80c19dc237cbf66bf3d96a69bd7ad1baff99ec9849f8208348c' # intel-mkl.conf
-	'976de24a127e1f43b1b2696ac3aef9fe03cb26b9bcf81126c73ffc751b2604d5' # intel-idb.conf
+	#'976de24a127e1f43b1b2696ac3aef9fe03cb26b9bcf81126c73ffc751b2604d5' # intel-gdb.conf
 	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8' # intel-ipp.conf
 	'aee2ae7f87f12f4af38d52423b40d547fd5bbe77e18694b9847e9f2a96d33c6e' # intel-tbb.conf
 	'5e68c529c65cac54218026c869e54b2ddb268179725fc1e6b56d920470dad999' # intel-mkl.sh
@@ -478,13 +478,15 @@ package_intel-fortran-compiler() {
 	mv ${xe_build_dir}/usr ${pkgdir}
 }
 
-package_intel-idb() {
+package_intel-gdb() {
 
 	set_build_vars
 
 	pkgdesc="Intel C/C++ debugger"
 	pkgver=${_pkg_ver}
 	depends=('intel-compiler-base')
+	replaces=('intel-idb')
+	
 	install=intel-composer.install
 	echo -e " # intel-idb: Start Building"
 
@@ -500,27 +502,27 @@ package_intel-idb() {
 
 	cd ${xe_build_dir}
 	
-	echo -e " # intel-idb: Extracting RPS"
-	extract_rpms 'intel-idb*.rpm'  $xe_build_dir
+	echo -e " # intel-gdb: Extracting RPS"
+	extract_rpms 'intel-gdb*.rpm'  $xe_build_dir
 
-	echo -e " # intel-idb: Editing variables"
+	echo -e " # intel-gdb: Editing variables"
 	cd ${xe_build_dir}/opt/intel/${_composer_xe_dir}/bin
-	rm idbvars.csh
-	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' idbvars.sh
+	rm debuggervars.csh
+	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' debuggervars.sh
 
-	cd $_i_arch
-	rm idbvars.csh
-	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' idbvars.sh
-	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' idb
-	sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' idbc
+	#cd $_i_arch
+	#rm debuggervars.csh
+	#sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' debuggervars.sh
+	#sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' gdb
+	#sed -i 's/<INSTALLDIR>/\/opt\/intel\/composerxe/g' gdbc
 
 	if $_remove_docs ; then
-	  echo -e " # intel-idb: Remove documentation"
+	  echo -e " # intel-gdb: Remove documentation"
 	  rm -rf ${xe_build_dir}/opt/intel/${_composer_xe_dir}/Documentation
 	fi
 
-	echo -e " # intel-idb: Coping man pages"
-	mv ${xe_build_dir}/opt/intel/${_composer_xe_dir}/man/en_US/man1/*.1 ${_man_dir}
+	echo -e " # intel-gdb: Coping man pages"
+	mv ${xe_build_dir}/opt/intel/${_composer_xe_dir}/debugger/gdb/${_i_arch}/share/man/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
@@ -529,7 +531,7 @@ package_intel-idb() {
 
 	cd ${xe_build_dir}
 
-	echo -e " # intel-idb: Move package"
+	echo -e " # intel-gdb: Move package"
 
 	mv ${xe_build_dir}/opt ${pkgdir}
 	mv ${xe_build_dir}/etc ${pkgdir}
