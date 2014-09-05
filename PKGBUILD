@@ -39,7 +39,7 @@ PKGEXT='.pkg.tar.gz'
 ########################################
 #OPTIONS begin
 # if you are using an AMD 64 cpu set this variable to true, leave it to false if you use an ia32, amd32 or intel64
-_amd_64=false 
+#_amd_64=false 
 
 # set to true if you want to remove documentations and examples form the packages.
 _remove_docs=true
@@ -80,11 +80,11 @@ _dir_nr='4584'
 options=(strip libtool staticlibs)
 
 
-if $_amd_64 ; then
-  _not_arch_64='intel64'
-else
-  _not_arch_64='ia64' 
-fi
+#if $_amd_64 ; then
+#  _not_arch_64='intel64'
+#else
+#  _not_arch_64='ia64' 
+#fi
 
 
 url="http://software.intel.com/en-us/articles/non-commercial-software-download/"
