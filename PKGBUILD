@@ -60,7 +60,7 @@ _v_b='164'
 
 _update='update2'
 
-pkgrel=1
+pkgrel=2
 
 _sp=''
 
@@ -438,9 +438,9 @@ package_intel-fortran-compiler() {
 	mkdir -p ${_man_dir}
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
+	  sed 's/<arch>/ia32/' < ${srcdir}/intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
+	  sed 's/<arch>/intel64/' < ${srcdir}/intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
 	fi
 
 	cd ${xe_build_dir}
@@ -499,9 +499,9 @@ package_intel-gdb() {
 	mkdir -p ${_man_dir}
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
+	  sed 's/<arch>/ia32/' < ${srcdir}/intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
+	  sed 's/<arch>/intel64/' < ${srcdir}/intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
 	fi
 
 	cd ${xe_build_dir}
