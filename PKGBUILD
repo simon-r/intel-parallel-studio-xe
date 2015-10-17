@@ -1,3 +1,4 @@
+# Maintainer: Mark Wells: mwellsa -at- gmail com
 # Contributor: simone riva: siomone.rva -a- gmail com
 # Intel Parallel Studio XE 2011 for Linux - ( Intel compiler icc suite )
 ##########################################################################
@@ -10,7 +11,7 @@
 # intel-ipp:                    Intel Integrated Performance Primitives
 # intel-mkl:                    Intel Math Kernel Library (Intel® MKL)
 # intel-sourcechecker:          Intel Source Checker
-# intel-tbb:                    Intel Threading Building Blocks (TBB)
+# intel-tbb_psxe:               Intel Threading Building Blocks (TBB)
 ###########################################################################
 
 # Parallel Studio XE
@@ -32,9 +33,7 @@
 # http://registrationcenter-download.intel.com/akdlm/irc_nas/4992/parallel_studio_xe_2015_update1.tgz
 
 pkgbase="intel-parallel-studio-xe"
-#pkgname="intel-parallel-studio-xe"
-#pkgname=( 'intel-compiler-base'  'intel-advisor-xe' )
-pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb' 'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe' )
+pkgname=('intel-compiler-base' 'intel-openmp' 'intel-fortran-compiler' 'intel-ipp' 'intel-mkl' 'intel-sourcechecker' 'intel-tbb_psxe' 'intel-vtune-amplifier-xe' 'intel-inspector-xe' 'intel-advisor-xe' )
 #true && pkgname=('intel-compiler-base'  'intel-gdb'  )
 
 PKGEXT='.pkg.tar.gz'
@@ -45,40 +44,48 @@ PKGEXT='.pkg.tar.gz'
 #_amd_64=false 
 
 # set to true if you want to remove documentations and examples form the packages.
+#_remove_docs=TRUE
 _remove_docs=true
 
 ########################################
 ########################################
-# set to true if you want to remove the static objects form the libs .
-_remove_static_objects_mkl=true
-_remove_static_objects_ipp=true
+# set to true if you want to remove the static objects from the libs.
+#_remove_static_objects_mkl=true
+_remove_static_objects_mkl=false
+#_remove_static_objects_ipp=true
+_remove_static_objects_ipp=false
 ########################################
 
 _year='2015'
-_v_a='2'
-_v_b='164' 
+_v_a='3'
+_v_b='187' 
 
-_update='update2'
+_update='update3'
 
-pkgrel=1
+pkgrel=3
 
 _sp=''
 
-_icc_ver='15.0.2'
-_ipp_ver='8.2.1'
-_mkl_ver='11.2.2'
-_openmp_ver='15.0.1'
-_sourcechecker_ver='15.0.2'
-_vtune_ver='2.0.393444'
-_advisor_ver='1.10.380555'
-_inspector_ver='1.2.379161'
+_icc_ver='15.0.3' # intel-ccompxe-${_v_b}-${_icc_ver}.noarch.rpm
+_openmp_ver='15.0.3' # intel-openmp-${_v_b}-${_openmp_ver}.${arch}.rpm
+_ipp_ver='8.2.2' # intel-ipp-ac-${_v_b}-${_ipp_ver}.${arch}.rpm
+_mkl_ver='11.2.3' # intel-mkl-cluster-${_v_b}-${_mkl_ver}.${arch}.rpm
+_tbb_ver='4.3.5' # intel-tbb-${_v_b_}-${_tbb_ver}.noarch.rpm
+_sourcechecker_ver='15.0.3' # intel-sourcechecker-common-${_v_b}-${_sourcechecker_ver}.noarch.rpm
+_vtune_ver='15.3.403110' # intel-vtune-amplifier-xe-${year}-*-${_vtune_ver}.${arch}.rpm
+_inspector_ver='15.1.379161' # intel-inspector-xe-${year}-*-${_inspector_ver}.${arch}.rpm
+_advisor_ver='15.1.380555' # intel-advisor-xe-${year}-*-${_advisor_ver}.${arch}.rpm
 
-_tbb_ver='4.3.0'
+# for some reason these man paths are different versions
+_advisor_man_ver='1.10.380555' 
+_inspector_man_ver='1.2.379161'
+_vtune_man_ver='3.0.403110'
+
 
 
 pkgver=${_year}.${_icc_ver}.${_v_a}.${_v_b}
 
-_dir_nr='5207'
+_dir_nr='7538'
 
 options=(strip libtool staticlibs)
 
@@ -110,7 +117,7 @@ source=(
 	'intel-mkl.conf' 
 	#'intel-gdb.conf'
 	'intel-ipp.conf'
-	'intel-tbb.conf'
+    'intel-tbb.conf'
 	'intel-mkl.sh'
         'intel-mkl.install'
         'intel-mkl-th.conf'
@@ -119,31 +126,28 @@ source=(
 	)
 
 
-
-
-
 sha256sums=(
-	'8cbde4d4fb3bbfcc5096d5d924953121ca84e9a9bee7b00dfd07c029c1a89943' # parallel_studio_xe_2015_update2.tgz
-	'338041f924d8f3ac31d349bca57f8ab66f094a5bb53d4f821f48fa710a112111' # intel_compilers.sh
-	'7da22140b9d8277d06d88f6bd37cb77ed17bc87d4f7ec5958587416639955991' # intel_vtune-amplifier-xe.sh
-	'292a9eea2c9a836ee9dc0d4ff28fc741d5548a3182e4f75aec7b93e1dd7b4f21' # intel_advisor-xe.sh
-	'6dc3992ac649f979328d13cb98ead95121752a34fbad07d41ee65b084cdf03cf' # intel_inspector-xe.sh
-	'3f96dec03111e69d16bb363acf4d0570e8a9526c09e5e542a7558f1b26d043ef' # intel-composer.install
-	'31ac4d0f30a93fe6393f48cb13761d7d1ce9719708c76a377193d96416bed884' # intel-compiler-base.conf
-	'c165386ba33b25453d4f5486b7fefcdba7d31e156ad280cbdfa13ed924b01bef' # intel-fortran.conf
-	'99cc9683cc75934cc21bb5a09f6ad83365ee48712719bfd914de9444695eed13' # intel-openmp.conf
-	'a856326362e9b80c19dc237cbf66bf3d96a69bd7ad1baff99ec9849f8208348c' # intel-mkl.conf
-	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8' # intel-ipp.conf
-	'aee2ae7f87f12f4af38d52423b40d547fd5bbe77e18694b9847e9f2a96d33c6e' # intel-tbb.conf
-	'5e68c529c65cac54218026c869e54b2ddb268179725fc1e6b56d920470dad999' # intel-mkl.sh
-	'11398c0ae2e2011902b1d6356d916d41bb8b54d39d090c6c83630f4b0e84e93a' # intel-mkl.install
-        'e515cb28bf40cdb0db818db6a2688a0028575153a1b9d5acfb0bc5f13fe45722' # intel-mkl-th.conf
-	'8c6a1f7b1b12d498e68b3085d8b2fcd050505209b7c0f2b870ba5f65ee135a90' # intel-tbb.install
-	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5' # EULA.txt
+    'ab7169989c87bbb0fe66221cb7eb3a26b17c8b9ceff38f1926e5607834306896'  # parallel_studio_xe_2015_update2.tgz
+	'338041f924d8f3ac31d349bca57f8ab66f094a5bb53d4f821f48fa710a112111'  # intel_compilers.sh
+	'7da22140b9d8277d06d88f6bd37cb77ed17bc87d4f7ec5958587416639955991'  # intel_vtune-amplifier-xe.sh
+	'292a9eea2c9a836ee9dc0d4ff28fc741d5548a3182e4f75aec7b93e1dd7b4f21'  # intel_advisor-xe.sh
+	'6dc3992ac649f979328d13cb98ead95121752a34fbad07d41ee65b084cdf03cf'  # intel_inspector-xe.sh
+	'3f96dec03111e69d16bb363acf4d0570e8a9526c09e5e542a7558f1b26d043ef'  # intel-composer.install
+	'31ac4d0f30a93fe6393f48cb13761d7d1ce9719708c76a377193d96416bed884'  # intel-compiler-base.conf
+	'c165386ba33b25453d4f5486b7fefcdba7d31e156ad280cbdfa13ed924b01bef'  # intel-fortran.conf
+	'99cc9683cc75934cc21bb5a09f6ad83365ee48712719bfd914de9444695eed13'  # intel-openmp.conf
+	'a856326362e9b80c19dc237cbf66bf3d96a69bd7ad1baff99ec9849f8208348c'  # intel-mkl.conf
+	'da6f41c2e002c9a793c75a18c8d1c85ef7ef5bf83a7a0a158ff144481491aac8'  # intel-ipp.conf
+	'aee2ae7f87f12f4af38d52423b40d547fd5bbe77e18694b9847e9f2a96d33c6e'  # intel-tbb.conf
+	'5e68c529c65cac54218026c869e54b2ddb268179725fc1e6b56d920470dad999'  # intel-mkl.sh
+	'11398c0ae2e2011902b1d6356d916d41bb8b54d39d090c6c83630f4b0e84e93a'  # intel-mkl.install
+    'e515cb28bf40cdb0db818db6a2688a0028575153a1b9d5acfb0bc5f13fe45722'  # intel-mkl-th.conf
+	'8c6a1f7b1b12d498e68b3085d8b2fcd050505209b7c0f2b870ba5f65ee135a90'  # intel-tbb.install
+	'228ac25e147adb9b872e1a562e522d2fd48809ccae89b765112009896a6d55a5'  # EULA.txt
 	)
 
 
-#_archive=l_ccompxe${_comp}_p_${pkgver}
+_archive=${_parallel_studio_xe_dir}
 if [ "$CARCH" = "i686" ]; then
     _i_arch='ia32'
     _i_arch2='i486'
@@ -265,11 +269,21 @@ build() {
 	    echo -e "\e[1mFound license files in ${base_dir}."
         echo -e "These will be installed into /opt/intel/licenses ...\e[0m"
     else
-	    echo -e "\e[1mNo license files found in ${base_dir}."
-        echo -e "Remember to place license files in one of these locations:"
-        echo -e "    /opt/intel/licenses"
-        echo -e "    ~/intel/licenses"
-        echo -e "Or the compiler will not work!\e[0m"
+	#echo -e "\e[1mNo license files found in ${base_dir}."
+        #echo -e "Remember to place license files in one of these locations:"
+        #echo -e "    /opt/intel/licenses"
+        #echo -e "    ~/intel/licenses"
+        #echo -e "Or the compiler will not work!\e[0m"
+        read -p "NO licence file found. Do you have a serial number? [Y/n] " RESP
+        RESP=${RESP,,}
+        if [[ $RESP =~ ^(Y|y|yes| ) ]]; then
+            read -p "Please enter your serial number: " SERIAL
+            sed -i '/^ACTIVATION_TYPE=/s/=.*/=serial_number/' ${srcdir}/${_archive}/silent.cfg
+            echo "ACTIVATION_SERIAL_NUMBER=$SERIAL" >> ${srcdir}/${_archive}/silent.cfg
+        else
+            msg "Before re-building, visit the website above to ask for a non-commercial license, and place the .lic file in "${srcdir}"/"
+            exit 0
+        fi
     fi
 	echo -e "-----------------------------------------------------------------------------------"
     echo -e ""
@@ -438,9 +452,9 @@ package_intel-fortran-compiler() {
 	mkdir -p ${_man_dir}
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
+	  sed 's/<arch>/ia32/' < ${srcdir}/intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
+	  sed 's/<arch>/intel64/' < ${srcdir}/intel-fortran.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-fortran.conf
 	fi
 
 	cd ${xe_build_dir}
@@ -499,9 +513,9 @@ package_intel-gdb() {
 	mkdir -p ${_man_dir}
 
 	if [ "$CARCH" = "i686" ]; then
-	  sed 's/<arch>/ia32/' < ../intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
+	  sed 's/<arch>/ia32/' < ${srcdir}/intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
 	else
-	  sed 's/<arch>/intel64/' < ../intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
+	  sed 's/<arch>/intel64/' < ${srcdir}/intel-idb.conf > ${xe_build_dir}/etc/ld.so.conf.d/intel-idb.conf
 	fi
 
 	cd ${xe_build_dir}
@@ -711,12 +725,13 @@ package_intel-sourcechecker() {
 	mv ${xe_build_dir}/opt ${pkgdir}
 }
 
-package_intel-tbb() {
+package_intel-tbb_psxe() {
 
 	set_build_vars
 
 	pkgdesc="Intel Threading Building Blocks (TBB)"
 	pkgver=${_year}.${_tbb_ver}.${_v_b}
+    provides=("intel-tbb")
 	#depends=('intel-compiler-base')
 	install=intel-tbb.install
 
@@ -791,7 +806,8 @@ package_intel-vtune-amplifier-xe() {
 	extract_rpms 'intel-vtune-amplifier-xe-*.rpm'  $xe_build_dir
 	
 	echo -e " # intel-vtune-amplifier-xe: Coping man pages"
-	mv ${xe_build_dir}/opt/intel/vtune_amplifier_xe_${_year}.${_vtune_ver}/man/man1/*.1 ${_man_dir}
+	mv ${xe_build_dir}/opt/intel/vtune_amplifier_xe_${_year}.${_vtune_man_ver}/man/man1/*.1 ${_man_dir}
+	#mv ${xe_build_dir}/opt/intel/vtune_amplifier_xe_${_year}.${_vtune_ver}/man/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
@@ -833,7 +849,8 @@ package_intel-advisor-xe() {
 	extract_rpms 'intel-advisor-xe-*.rpm'  $xe_build_dir
 	
 	echo -e " # intel-advisor-xe: Coping man pages"
-	mv ${xe_build_dir}/opt/intel/advisor_xe_${_year}.${_advisor_ver}/man/man1/*.1 ${_man_dir}
+	#mv ${xe_build_dir}/opt/intel/advisor_xe_${_year}.${_advisor_ver}/man/man1/*.1 ${_man_dir}
+	mv ${xe_build_dir}/opt/intel/advisor_xe_${_year}.${_advisor_man_ver}/man/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
@@ -875,7 +892,8 @@ package_intel-inspector-xe() {
 	extract_rpms 'intel-inspector-xe-*.rpm'  $xe_build_dir
 	
 	echo -e " # intel-inspector-xe: Coping man pages"
-	mv ${xe_build_dir}/opt/intel/inspector_xe_${_year}.${_inspector_ver}/man/man1/*.1 ${_man_dir}
+	#mv ${xe_build_dir}/opt/intel/inspector_xe_${_year}.${_inspector_ver}/man/man1/*.1 ${_man_dir}
+	mv ${xe_build_dir}/opt/intel/inspector_xe_${_year}.${_inspector_man_ver}/man/man1/*.1 ${_man_dir}
 
 	cd ${_man_dir}
 	for f in *.1 ; do
